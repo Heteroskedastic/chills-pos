@@ -1,0 +1,27 @@
+<!-- END SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+<!-- BEGIN PAGE HEADER-->
+<ng-include src="'app/partials/pagebar.html'"></ng-include>
+<h3 class="page-title">
+{{$state.current.data.pageInfo.title}} <small>{{$state.current.data.pageInfo.titleDesc}}</small>
+</h3>
+<!-- END PAGE HEADER-->
+<div class="clearfix">
+</div>
+<div class="row">
+    <div class="col-md-12 portlet light">
+        <form role="form" ng-submit="updateRecord()">
+            <ng-include src="'app/partials/pages/product/_form_fields.html'"></ng-include>
+            <div class="margiv-top-10">
+                <button type="submit" name="submitBtn" class="btn green-haze"  ng-disabled="saving">
+                <i ng-class="saving? 'fa fa-spin fa-spinner':'fa fa-save'"></i>
+                <span ng-hide="saving">Save</span>
+                <span ng-show="saving">Saving</span>
+                </button>
+                <a href="{{ $state.href('product-list') }}" class="btn btn-default"> Cancel </a>
+                <button type="button" ng-click="showDeleteConfirm()" class="btn btn-danger pull-right"><apan class="fa fa-trash"></apan> Delete </button>
+            </div>
+
+        </form>
+    </div>
+
+</div>

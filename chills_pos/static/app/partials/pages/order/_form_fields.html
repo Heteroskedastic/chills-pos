@@ -1,0 +1,61 @@
+            <div class="form-group">
+                <label class="control-label">Customer(*)</label>
+                <ui-select autofocus ui-select-open-on-focus on-select="focusFirstProduct()" focus-on="OrderCustomerFocus" data-ng-model="selectedRecord.customer" theme="bootstrap">
+                    <ui-select-match placeholder="Customer">
+                        {{$select.selected.first_name}} {{$select.selected.last_name}} ({{$select.selected.uid || 'NO UID'}}) <em><small class="text-info">{{ $select.selected.points}} points</small></em>
+                    </ui-select-match>
+                    <ui-select-choices repeat="item.id as item in $global.Customer.comboData | filter: $select.search" value="{{$select.selected.id}}">
+                        <span ng-bind-html="item.first_name + ' ' + item.last_name + ' ('+ (item.uid || 'NO UID') + ')' + ' <em><small class=\'text-info\'>'+item.points+' points</small></em>' | highlight: $select.search"></span>
+                    </ui-select-choices>
+                </ui-select>
+            </div>
+            <div>
+                <label class="control-label">Order Items(*)</label>
+                <div class="">
+                    <table id="order-item-table" class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">#</th>
+                                <th style="width: 40%;">Product</th>
+                                <th>Quantity</th>
+                                <th>Unit Price</th>
+                                <th>Total Price</th>
+                                <th class="order-items-actions-col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="item in selectedRecord.order_items">
+                                <td>{{ $index + 1 }}</td>
+                                <td>
+                                    <ui-select name="order_item_product" ui-select-open-on-focus data-ng-model="item.product" theme="bootstrap"  ng-keydown="($event.keyCode == 9 || $event.keyCode == 13) && !$event.shiftKey && focusQuantity($event)">
+                                        <ui-select-match placeholder="Product">
+                                            {{$select.selected.name}} <em><small class="text-info">{{ $select.selected.quantity}} quantity</small></em>
+                                        </ui-select-match>
+                                        <ui-select-choices repeat="pitem.id as pitem in $global.Product.comboData | filter: $select.search" value="{{$select.selected.id}}">
+                                            <span ng-bind-html="pitem.name  + ' <em><small class=\'text-info\'>'+pitem.quantity+' quantity</small></em>' | highlight: $select.search"></span>
+                                        </ui-select-choices>
+                                    </ui-select>
+                                </td>
+                                <td>
+                                    <input name="order_item_quantity" type="number" min="1" pattern="\d*" placeholder="Quantity" class="form-control" data-ng-model="item.quantity" required ng-keydown="($last && $event.keyCode == 9 && !$event.shiftKey && insertAfter()) || ($event.keyCode == 46 && $event.altKey && selectedRecord.order_items.splice($index, 1)) || ($event.keyCode == 65 && $event.altKey && insertAfter($index))"/>
+                                </td>
+                                <td class="order-item-unit-price">
+                                    {{ ($global.Product.comboData|findById:item.product).price|default:'0'|currency }}
+                                </td>
+                                <td class="order-item-total-price">
+                                    {{ (($global.Product.comboData|findById:item.product).price|default:0) * item.quantity|number:2|currency }}
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-success" tabindex="-1" ng-click="insertAfter($index)"><span class="fa fa-plus"></span></button>
+                                    <button type="button" class="btn btn-sm btn-danger" tabindex="-1" ng-click="selectedRecord.order_items.splice($index, 1)" ng-disabled="selectedRecord.order_items.length <= 1"><span class="fa fa-trash"></span></button>
+                                </td>
+                            </tr>
+                            <tr class="footer">
+                                <td colspan="2">Total Items=<strong>{{ selectedRecord.order_items.length }}</strong></td>
+                                <td colspan="2">Sum=<strong>{{ selectedRecord.order_items|sumByKey:'quantity'}}</strong></td>
+                                <td colspan="2">Sum=<strong>{{ getPriceSum()|currency }}</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>

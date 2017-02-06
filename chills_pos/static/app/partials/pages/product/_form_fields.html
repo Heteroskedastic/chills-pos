@@ -1,0 +1,36 @@
+            <div class="form-group">
+                <label class="control-label">Name(*)</label>
+                <input type="text" placeholder="Name" class="form-control" data-ng-model="selectedRecord.name" required />
+            </div>
+            <div class="form-group">
+                <label class="control-label">Description</label>
+                <textarea type="text" placeholder="Description" class="form-control" data-ng-model="selectedRecord.description"></textarea>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Quantity</label>
+                <input type="number" pattern="\d*" placeholder="Quantity" class="form-control" data-ng-model="selectedRecord.quantity" required/>
+            </div>
+            <div class="form-group">
+                <label class="control-label">UPC</label>
+                <input type="text" placeholder="Universal Product Code" class="form-control" data-ng-model="selectedRecord.upc"/>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Part Number</label>
+                <input type="text" placeholder="Part Number" class="form-control" data-ng-model="selectedRecord.part_number"/>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Re-order Limit</label>
+                <input type="number" placeholder="Re-order Limit" class="form-control" data-ng-model="selectedRecord.reorder_limit" required/>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Retail Price</label>
+                <input type="number" placeholder="Retail Price" step="any" class="form-control" data-ng-model="selectedRecord.price" required/>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Purchase Price</label>
+                <input type="number" placeholder="Purchase Price" step="any" class="form-control" data-ng-model="selectedRecord.purchase_price" required/>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Enabled?</label>
+                <input type="checkbox" data-ng-model="selectedRecord.active"/>
+            </div>

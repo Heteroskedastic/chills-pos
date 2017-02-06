@@ -1,0 +1,214 @@
+/* here you can put your own css to customize and override the theme */
+
+/***
+Rounded Portlets
+***/
+/*
+.portlet {
+	border-radius: 4px !important;
+}
+
+.portlet .portlet-title {
+	border-radius: 4px 4px 0px 0px !important;
+}
+
+.portlet .portlet-body,
+.portlet .portlet-body .form-actions  {
+	border-radius: 0px 0px 4px 4px !important;
+}
+*/
+
+/* ---- margin --- */
+.mar-left5 { margin-left: 5px !important; }
+.mar-left10 { margin-left: 10px !important; }
+.mar-left15 { margin-left: 15px !important; }
+.mar-left20 { margin-left: 20px !important; }
+.mar-left25 { margin-left: 25px !important; }
+.mar-left30 { margin-left: 30px !important; }
+
+.mar-right5 { margin-right: 5px !important; }
+.mar-right10 { margin-right: 10px !important; }
+.mar-right15 { margin-right: 15px !important; }
+.mar-right20 { margin-right: 20px !important; }
+.mar-right25 { margin-right: 25px !important; }
+.mar-right30 { margin-right: 30px !important; }
+
+/* top */
+.mar-top0 { margin-top: 0 !important; }
+.mar-top5 { margin-top: 5px !important; }
+
+.mar-top10 { margin-top: 10px !important; }
+
+.mar-top15 { margin-top: 15px !important; }
+.mar-top20 { margin-top: 20px !important; }
+.mar-top25 { margin-top: 25px !important; }
+.mar-top30 { margin-top: 30px !important; }
+.mar-top35 { margin-top: 35px !important; }
+.mar-top40 { margin-top: 40px !important; }
+
+
+/* bottom */
+.mar-bot0 { margin-bottom: 0 !important; }
+.mar-bot5 { margin-bottom: 5px !important; }
+
+.mar-bot10 { margin-bottom: 10px !important; }
+
+.mar-bot15 { margin-bottom: 15px !important; }
+.mar-bot20 { margin-bottom: 20px !important; }
+.mar-bot25 { margin-bottom: 25px !important; }
+.mar-bot30 { margin-bottom: 30px !important; }
+.mar-bot35 { margin-bottom: 35px !important; }
+.mar-bot40 { margin-bottom: 40px !important; }
+
+/* ---- padding --- */
+.pad-left5 { padding-left: 5px !important; }
+.pad-left10 { padding-left: 10px !important; }
+.pad-left15 { padding-left: 15px !important; }
+.pad-left20 { padding-left: 20px !important; }
+.pad-left25 { padding-left: 25px !important; }
+.pad-left30 { padding-left: 30px !important; }
+
+.pad-right5 { padding-right: 5px !important; }
+.pad-right10 { padding-right: 10px !important; }
+.pad-right15 { padding-right: 15px !important; }
+.pad-right20 { padding-right: 20px !important; }
+.pad-right25 { padding-right: 25px !important; }
+.pad-right30 { padding-right: 30px !important; }
+
+/* top */
+.pad-top0 { padding-top: 0 !important; }
+.pad-top5 { padding-top: 5px !important; }
+
+.pad-top10 { padding-top: 10px !important; }
+
+.pad-top15 { padding-top: 15px !important; }
+.pad-top20 { padding-top: 20px !important; }
+.pad-top25 { padding-top: 25px !important; }
+.pad-top30 { padding-top: 30px !important; }
+.pad-top35 { padding-top: 35px !important; }
+.pad-top40 { padding-top: 40px !important; }
+
+
+/* bottom */
+.pad-bot0 { padding-bottom: 0 !important; }
+.pad-bot5 { padding-bottom: 5px !important; }
+
+.pad-bot10 { padding-bottom: 10px !important; }
+
+.pad-bot15 { padding-bottom: 15px !important; }
+.pad-bot20 { padding-bottom: 20px !important; }
+.pad-bot25 { padding-bottom: 25px !important; }
+.pad-bot30 { padding-bottom: 30px !important; }
+.pad-bot35 { padding-bottom: 35px !important; }
+.pad-bot40 { padding-bottom: 40px !important; }
+
+
+.ui-grid-header-cell .ui-grid-cell-contents {
+    height:36px;
+    white-space: normal;
+    -ms-text-overflow: clip;
+    -o-text-overflow: clip;
+    text-overflow: clip;
+    overflow: visible;
+}
+
+.grid {
+    height: 440px;
+}
+
+.grid-msg-overlay {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  z-index:100000;
+}
+
+.grid-msg-overlay .msg {
+  opacity: 1;
+  position: absolute;
+  top: 20%;
+  left: 20%;
+  width: 60%;
+  height: 50%;
+  /*background-color: #eee;*/
+  /*border-radius: 4px;*/
+  /*border: 1px solid #555;*/
+  color: #FB5557;
+  text-align: center;
+  font-size: 24px;
+  display: table;
+}
+
+.grid-msg-overlay .msg span {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.modal {
+  top: 45px;
+}
+
+.action-icon {
+  font-size: 16px;
+}
+
+
+.uib-increment a {
+  padding-bottom: 0px;
+  padding-top: 0px;
+}
+
+.uib-decrement a {
+  padding-bottom: 0px;
+  padding-top: 0px;
+}
+
+.vcenter {
+    vertical-align: middle !important;
+}
+
+#patient-visit-report-table > tbody > tr:nth-of-type(odd) {
+  background-color: #f9f9f9;
+}
+
+#patient-visit-report-table th {
+  /*border-left-color: whitesmoke;*/
+  border-color: whitesmoke;
+}
+
+#weekly-provider-visit-report-table tr {
+  background-color: #f9f9f9;
+}
+
+#monthly-provider-visit-report-table tr {
+  background-color: #f9f9f9;
+}
+
+#quick-add-patient-visit .form-group {
+  margin-bottom: 5px;
+}
+
+#quick-add-patient-visit .portlet {
+  padding: 5px 20px 5px 20px;
+}
+
+.nounderline, .nounderline:hover, .nounderline:focus {
+  text-decoration: none
+}
+
+.order-items-actions-col {
+    width: 100px;
+}
+
+.order-item-total-price {
+    font-weight: bold;
+}
+
+#order-item-table th {
+    background-color: lavender;
+}
+table .footer td {
+    background-color: #f9f9c5;
+}

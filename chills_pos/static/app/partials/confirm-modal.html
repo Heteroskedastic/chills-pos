@@ -1,0 +1,13 @@
+<div class="modal-header">
+    Confirm Delete
+</div>
+<div class="modal-body">
+    Are you sure?
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" type="button" ng-click="removeRecord()" ng-disabled="deleting">
+        <span ng-hide="deleting">Yes</span>
+        <span ng-show="deleting">Deleting</span>
+    </button>
+    <button class="btn btn-warning" type="button" ng-click="cancelRemove()">Cancel</button>
+</div>

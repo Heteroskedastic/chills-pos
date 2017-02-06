@@ -1,0 +1,121 @@
+<!-- END SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+<!-- BEGIN PAGE HEADER-->
+<ng-include src="'app/partials/pagebar.html'"></ng-include>
+<h3 class="page-title">
+{{$state.current.data.pageInfo.title}} <small>{{$state.current.data.pageInfo.titleDesc}}</small>
+</h3>
+<!-- END PAGE HEADER-->
+<div class="clearfix">
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet light">
+            <div class="portlet-title tabbable-line">
+                <div class="caption caption-md">
+                    <i class="icon-globe theme-font hide"></i>
+                    <span class="caption-subject font-blue-madison bold uppercase">Profile Account</span>
+                </div>
+                <ul class="nav nav-tabs">
+                    <li class="active">
+                        <a data-target="#tab_1_1" data-toggle="tab">Personal Info</a>
+                    </li>
+                    <li>
+                        <a data-target="#tab_1_2" data-toggle="tab">Change Password</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="portlet-body">
+                <div class="tab-content">
+                    <!-- PERSONAL INFO TAB -->
+                    <div class="tab-pane active" id="tab_1_1">
+                        <form name="profilePersonalInfo" role="form" action="#">
+                            <div class="form-group">
+                                <label class="control-label">Username</label>
+                                <input type="text" class="form-control" readonly value="{{currentUser.username}}" />
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">First Name</label>
+                                <input type="text" placeholder="John" class="form-control" data-ng-model="profileForm.first_name"/>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Last Name</label>
+                                <input type="text" placeholder="Doe" class="form-control" data-ng-model="profileForm.last_name"/>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">E-mail</label>
+                                <input type="text" placeholder="example@email.com" class="form-control" data-ng-model="profileForm.email"/>
+                            </div>
+                            <div class="margiv-top-10">
+                                <a name="submitBtn" ng-click="saveProfileInfo(profilePersonalInfo)" class="btn green-haze" data-loading-text="Sending...">
+                                Save Changes </a>
+                                <a href="#/" class="btn default">
+                                Cancel </a>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- END PERSONAL INFO TAB -->
+                    <!-- CHANGE PASSWORD TAB -->
+                    <div class="tab-pane" id="tab_1_2">
+                        <form name="profileChangePasswprd" action="#">
+                            <div class="form-group">
+                                <label class="control-label">Current Password</label>
+                                <input name="old_password" type="password" class="form-control" data-ng-model="profileSecretForm.old_password" required/>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">New Password</label>
+                                <input id="password" name="password" type="password" class="form-control" data-ng-model="profileSecretForm.password" required/>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Re-type New Password</label>
+                                <input id="rpassword" name="rpassword" type="password" class="form-control" data-ng-model="profileSecretForm.rpassword" required/>
+                            </div>
+                            <div class="margin-top-10">
+                                <a name="submitBtn" ng-click="changePassword(profileChangePasswprd)" class="btn green-haze" data-loading-text="Sending...">
+                                Change Password </a>
+                                <a href="#/" class="btn default">
+                                Cancel </a>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- END CHANGE PASSWORD TAB -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+$(document).ready(function() {
+    $('form[name=profileChangePasswprd]').validate({
+        errorElement: 'span', //default input error message container
+        errorClass: 'help-block', // default input error message class
+        focusInvalid: false, // do not focus the last invalid input
+        rules: {
+            password: {
+                required: true
+            },
+            rpassword: {
+                equalTo: "#password"
+            }
+        },
+        invalidHandler: function(event, validator) { //display error alert on form submit
+            $('.required-field-error', $('.login-form')).show();
+        },
+
+        highlight: function(element) { // hightlight error inputs
+            $(element)
+                .closest('.form-group').addClass('has-error'); // set error class to the control group
+        },
+
+        success: function(label) {
+            label.closest('.form-group').removeClass('has-error');
+            label.remove();
+        },
+
+        // errorPlacement: function(error, element) {
+        //     error.insertAfter(element.closest('.input-icon'));
+        // }
+    });
+});
+</script>
+<!-- END PROFILE CONTENT -->
+

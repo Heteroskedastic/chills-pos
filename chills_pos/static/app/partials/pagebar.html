@@ -1,0 +1,16 @@
+<div class="page-bar">
+    <ul class="page-breadcrumb">
+        <li>
+            <i class="fa fa-home"></i>
+            <a href="#/">Home</a>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li ng-show="$state.current.data.pageInfo.back">
+            <a href="{{$state.href($state.current.data.pageInfo.back)}}">{{$state.get($state.current.data.pageInfo.back).data.pageInfo.title}}</a>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li>
+            <span>{{$state.current.data.pageInfo.title}}</span>
+        </li>
+    </ul>
+</div>
