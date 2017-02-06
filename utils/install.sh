@@ -21,7 +21,7 @@ sudo pip install virtualenv
 
 # setup project
 NAME="chills_pos"
-GITURL=https://github.com/Heteroskedastic/chills-pos-report.git
+GITURL=https://github.com/Heteroskedastic/chills-pos.git
 ROOTDIR=/opt/webapps
 PROJECTDIR=$ROOTDIR/$NAME
 DJANGODIR=$PROJECTDIR/$NAME
