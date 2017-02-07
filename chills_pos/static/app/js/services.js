@@ -166,7 +166,6 @@ app.factory('GeneralUiGrid', ['uiGridConstants', 'Utils', function(uiGridConstan
                     gridOpt.data = response.results;
                     gridOpt.totalItems = pg.count;
                     gridOpt.paginationCurrentPage = pg.current_page;
-                    // gridOpt.paginationPageSize = pg.page_size;
                 }, function(response) {
                     Utils.showDefaultServerError(response);
                 }).$promise.finally(function() {

@@ -1,7 +1,10 @@
 <!-- END SAMPLE PORTLET CONFIGURATION MODAL FORM-->
 <!-- BEGIN PAGE HEADER-->
 <ng-include src="'app/partials/pagebar.html'"></ng-include>
-<a href="{{ $state.href('order-new') }}" class="btn btn-success pull-right"><i class="fa fa-plus"></i> New</a>
+<div class="pull-right">
+    <button class="btn btn-primary" title="Refresh Table" ng-click="refreshData()"><i class="fa fa-refresh"></i></button>
+    <a href="{{ $state.href('order-new') }}" class="btn btn-success"><i class="fa fa-plus"></i> New</a>
+</div>
 <h3 class="page-title">
 {{$state.current.data.pageInfo.title}} <small>{{$state.current.data.pageInfo.titleDesc}}</small>
 </h3>

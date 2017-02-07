@@ -120,7 +120,7 @@ app.controller("ProductListCtrl", function($scope, $rootScope, $state, $statePar
     if (!$global.gridOptions) {
         initialized = false;
         $global.gridOptions = {
-            paginationPageSizes: [10],
+            paginationPageSizes: [10, 20, 30, 50, 100, 200],
             paginationPageSize: 10,
             useExternalPagination: true,
             useExternalSorting: true,
@@ -152,6 +152,10 @@ app.controller("ProductListCtrl", function($scope, $rootScope, $state, $statePar
     if (!initialized) {
         $scope.getPage();
     }
+
+    $scope.refreshData = function () {
+        $scope.getPage();
+    };
 
     $scope.getDisplayType = function(type) {
         var choice = $global.typeChoices.filter(function(v) {
@@ -274,7 +278,7 @@ app.controller("CustomerListCtrl", function($scope, $rootScope, $state, $statePa
     if (!$global.gridOptions) {
         initialized = false;
         $global.gridOptions = {
-            paginationPageSizes: [10],
+            paginationPageSizes: [10, 20, 30, 50, 100, 200],
             paginationPageSize: 10,
             useExternalPagination: true,
             useExternalSorting: true,
@@ -300,6 +304,10 @@ app.controller("CustomerListCtrl", function($scope, $rootScope, $state, $statePa
     if (!initialized) {
         $scope.getPage();
     }
+
+    $scope.refreshData = function () {
+        $scope.getPage();
+    };
 
     $scope.getDisplayType = function(type) {
         var choice = $global.typeChoices.filter(function(v) {
@@ -422,7 +430,7 @@ app.controller("OrderListCtrl", function($scope, $rootScope, $state, $stateParam
     if (!$global.gridOptions) {
         initialized = false;
         $global.gridOptions = {
-            paginationPageSizes: [10],
+            paginationPageSizes: [10, 20, 30, 50, 100, 200],
             paginationPageSize: 10,
             useExternalPagination: true,
             useExternalSorting: true,
@@ -449,6 +457,10 @@ app.controller("OrderListCtrl", function($scope, $rootScope, $state, $stateParam
     if (!initialized) {
         $scope.getPage();
     }
+
+    $scope.refreshData = function () {
+        $scope.getPage();
+    };
 
     $scope.getDisplayType = function(type) {
         var choice = $global.typeChoices.filter(function(v) {
