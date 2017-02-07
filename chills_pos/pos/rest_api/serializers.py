@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.db import transaction
 from django.db.models import F
+from django.conf import settings
 from rest_framework import serializers
 
 from chills_pos.helpers.utils import DynamicFieldsSerializerMixin
@@ -12,6 +13,12 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         exclude = ('password',)
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('first_name', 'last_name', 'email',)
 
 
 class SessionSerializer(serializers.Serializer):
@@ -50,10 +57,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderItem
         fields = ('id', 'product', 'quantity', 'price')
-        extra_kwargs = {
-            'price': {'read_only': True}
-        }
-
+        read_only_fields = ('price',)
 
 
 class OrderSerializer(DynamicFieldsSerializerMixin, serializers.ModelSerializer):
@@ -64,11 +68,7 @@ class OrderSerializer(DynamicFieldsSerializerMixin, serializers.ModelSerializer)
         model = Order
         fields = ('id', 'customer', 'clerk', 'order_items', 'status', 'create_datetime', 'update_datetime',
                   'total_items', 'total_quantity', 'total_price', '_customer')
-        extra_kwargs = {
-            'status': {'read_only': True},
-            'total_quantity': {'read_only': True},
-            'total_price': {'read_only': True},
-        }
+        read_only_fields = ('status', 'total_quantity', 'total_price')
 
     def save_order_items(self, order, order_items_data, created=True):
         product_items = {}

@@ -5,7 +5,7 @@ app.controller('PageContentController', function($scope) {
     });
 });
 
-app.controller("MainCtrl", function($scope, $rootScope, $http, $window, Utils, SessionService, CustomerService, ProductService) {
+app.controller("MainCtrl", function($scope, $rootScope, $http, $window, Utils, SessionService, ProfileService, CustomerService, ProductService) {
     // load current user
     $rootScope.currentUser = {};
     $rootScope.pageLoaded = false;
@@ -18,7 +18,7 @@ app.controller("MainCtrl", function($scope, $rootScope, $http, $window, Utils, S
             Index.initCharts();
         }
     });
-    SessionService.get(function(response) {
+    ProfileService.get(function(response) {
         $rootScope.currentUser = response;
         $rootScope.pageLoaded = true;
         $('body').css('background-image', 'none').removeClass('hide');
@@ -63,9 +63,9 @@ app.controller("DashboardCtrl", function($scope, $rootScope) {
     // });
 });
 
-app.controller("MyProfileCtrl", function($scope, $rootScope, $http, Utils, SessionService) {
+app.controller("MyProfileCtrl", function($scope, $rootScope, $http, Utils, ProfileService) {
     $scope.profileForm = {};
-    SessionService.get(function(response) {
+    ProfileService.get(function(response) {
         $rootScope.currentUser = response;
         $scope.profileForm.first_name = $rootScope.currentUser.first_name;
         $scope.profileForm.last_name = $rootScope.currentUser.last_name;
@@ -77,41 +77,26 @@ app.controller("MyProfileCtrl", function($scope, $rootScope, $http, Utils, Sessi
     };
 
     $scope.saveProfileInfo = function(form) {
-        var jform = $("form[name="+form.$name+"]");
-        if (!jform.valid()) {
-            return;
-        }
-        $('[name=submitBtn]', jform).button('loading')
-        $http.put("/api/v1/user/", $scope.profileForm).
-        then(function(response) {
-            $rootScope.currentUser = response.data.user;
+        $scope.saving = true;
+        ProfileService.update($scope.profileForm, function(response) {
+            $rootScope.currentUser = response;
             Utils.showDefaultServerSuccess(response);
         }, function(response) {
             Utils.showDefaultServerError(response);
-        }).finally(function() {
-            $('[name=submitBtn]', jform).button('reset')
+        }).$promise.finally(function() {
+            $scope.saving = false;
         });
     };
-    $scope.changePassword = function(form) {
-        var jform = $("form[name="+form.$name+"]");
-        if (!jform.valid()) {
-            return;
-        }
-        $('[name=submitBtn]', jform).button('loading');
-        var data = {
-            old_password: $scope.profileSecretForm.old_password,
-            password: $scope.profileSecretForm.password
-        };
-        $http.put("/api/v1/user/", data).
-        then(function(response) {
+    $scope.changePassword = function() {
+        $scope.changing = true;
+        ProfileService.changePassword($scope.profileSecretForm, function(response) {
             $scope.profileSecretForm = {};
-            Utils.showDefaultServerSuccess(response);
+            Utils.showSuccess('Password changed successfully', 5000);
         }, function(response) {
             Utils.showDefaultServerError(response);
-        }).finally(function() {
-            $('[name=submitBtn]', jform).button('reset')
+        }).$promise.finally(function() {
+            $scope.changing = false;
         });
-
     };
 });
 
@@ -150,8 +135,10 @@ app.controller("ProductListCtrl", function($scope, $rootScope, $state, $statePar
                 {name: 'upc', 'displayName': 'UPC'},
                 {name: 'part_number', 'displayName': 'Part Number'},
                 {name: 'reorder_limit', 'displayName': 'Re-order Limit'},
-                {name: 'quantity', 'displayName': 'Quantity'},
-                {name: 'price', 'displayName': 'Price', cellFilter: 'currency'},
+                {name: 'quantity', 'displayName': 'Quantity',
+                    cellTemplate: '<div class="ui-grid-cell-contents ng-binding ng-scope text-bold" ng-class="{\'text-success\': row.entity.quantity>row.entity.reorder_limit , \'text-warning\' : row.entity.quantity==row.entity.reorder_limit, \'text-danger\' : row.entity.quantity<row.entity.reorder_limit}">{{row.entity.quantity}}</div>'
+                },
+                {name: 'price', 'displayName': 'Price', cellFilter: 'currency', cellClass: 'text-bold'},
                 {name: 'purchase_price', 'displayName': 'Purchase Price', cellFilter: 'currency'},
                 {name: 'active', 'displayName': 'Enabled?',
                     cellTemplate: '<div class="ui-grid-cell-contents ng-binding ng-scope fa" ng-class="{true:\'fa-check text-success\', false:\'fa-close text-danger\'}[row.entity.active==true]"></div>'
@@ -501,7 +488,10 @@ app.controller("OrderNewCtrl", function($scope, $rootScope, $state,$stateParams,
             if ($global && $global.gridOptions) {
                 $global.gridOptions.data.splice(0, 0, response);
             }
-            $rootScope.$global.Order.comboData = undefined;
+            $rootScope.$global.Customer.comboData = undefined;
+            $rootScope.$global.Customer.gridOptions = undefined;
+            $rootScope.$global.Product.comboData = undefined;
+            $rootScope.$global.Product.gridOptions = undefined;
             $state.go('order-list');
             Utils.showDefaultServerSuccess(response);
         }, function(response) {
@@ -555,7 +545,10 @@ app.controller("OrderEditCtrl", function($scope, $rootScope, $state,$stateParams
                         if (idx >= 0) {
                             gridOptions.data.splice(idx, 1);
                         }
-                        $rootScope.$global.Order.comboData = undefined;
+                        $rootScope.$global.Customer.comboData = undefined;
+                        $rootScope.$global.Customer.gridOptions = undefined;
+                        $rootScope.$global.Product.comboData = undefined;
+                        $rootScope.$global.Product.gridOptions = undefined;
                         Utils.showDefaultServerSuccess(response);
                         $uibModalInstance.close();
                         $state.go('order-list');
@@ -584,7 +577,10 @@ app.controller("OrderEditCtrl", function($scope, $rootScope, $state,$stateParams
             if (idx >= 0) {
                 $global.gridOptions.data[idx] = response;
             }
-            $rootScope.$global.Order.comboData = undefined;
+            $rootScope.$global.Customer.comboData = undefined;
+            $rootScope.$global.Customer.gridOptions = undefined;
+            $rootScope.$global.Product.comboData = undefined;
+            $rootScope.$global.Product.gridOptions = undefined;
             $state.go('order-list');
             Utils.showDefaultServerSuccess(response);
         }, function(response) {

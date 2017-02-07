@@ -15,12 +15,12 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
-from django.views.generic import RedirectView
+from djoser.views import SetPasswordView
 from rest_framework import routers
 from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token, \
     verify_jwt_token
 
-from pos.rest_api.views import SessionView, ProductView, CustomerView, OrderView
+from pos.rest_api.views import SessionView, ProductView, CustomerView, OrderView, ProfileView
 
 # register all rest views here
 from pos.views import IndexView, LoginView
@@ -28,6 +28,7 @@ from pos.views import IndexView, LoginView
 rest_router = routers.DefaultRouter()
 rest_router.trailing_slash = "/?"  # added to support both / and slashless
 rest_router.register(r'session', SessionView, base_name='session')
+rest_router.register(r'me', ProfileView, base_name='profile')
 rest_router.register(r'product', ProductView, base_name='product')
 rest_router.register(r'customer', CustomerView, base_name='customer')
 rest_router.register(r'order', OrderView, base_name='order')
@@ -38,6 +39,7 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^api-auth/', include('rest_framework.urls',
                                namespace='rest_framework')),
+    url(r'^api/v1/me/password', SetPasswordView.as_view()),
     url(r'^api/v1/', include(rest_router.urls, namespace='rest_api')),
     url(r'^token/auth/', obtain_jwt_token),
     url(r'^token/refresh/', refresh_jwt_token),

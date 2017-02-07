@@ -28,7 +28,7 @@
                 <div class="tab-content">
                     <!-- PERSONAL INFO TAB -->
                     <div class="tab-pane active" id="tab_1_1">
-                        <form name="profilePersonalInfo" role="form" action="#">
+                        <form name="profilePersonalInfo" role="form" ng-submit="saveProfileInfo()">
                             <div class="form-group">
                                 <label class="control-label">Username</label>
                                 <input type="text" class="form-control" readonly value="{{currentUser.username}}" />
@@ -46,34 +46,42 @@
                                 <input type="text" placeholder="example@email.com" class="form-control" data-ng-model="profileForm.email"/>
                             </div>
                             <div class="margiv-top-10">
-                                <a name="submitBtn" ng-click="saveProfileInfo(profilePersonalInfo)" class="btn green-haze" data-loading-text="Sending...">
-                                Save Changes </a>
-                                <a href="#/" class="btn default">
+                                <button type="submit" name="submitBtn" class="btn green-haze"  ng-disabled="saving">
+                                <i ng-class="saving? 'fa fa-spin fa-spinner':'fa fa-save'"></i>
+                                <span ng-hide="saving">Save</span>
+                                <span ng-show="saving">Saving</span>
+                                </button>
+                                <a href="{{ $state.href('dashboard') }}" class="btn btn-default">
                                 Cancel </a>
+
                             </div>
                         </form>
                     </div>
                     <!-- END PERSONAL INFO TAB -->
                     <!-- CHANGE PASSWORD TAB -->
                     <div class="tab-pane" id="tab_1_2">
-                        <form name="profileChangePasswprd" action="#">
+                        <form name="profileChangePassword" ng-submit="changePassword()">
                             <div class="form-group">
                                 <label class="control-label">Current Password</label>
-                                <input name="old_password" type="password" class="form-control" data-ng-model="profileSecretForm.old_password" required/>
+                                <input name="current_password" type="password" class="form-control" data-ng-model="profileSecretForm.current_password" required/>
                             </div>
                             <div class="form-group">
                                 <label class="control-label">New Password</label>
-                                <input id="password" name="password" type="password" class="form-control" data-ng-model="profileSecretForm.password" required/>
+                                <input id="new_password" name="new_password" type="password" class="form-control" data-ng-model="profileSecretForm.new_password" required/>
                             </div>
                             <div class="form-group">
                                 <label class="control-label">Re-type New Password</label>
-                                <input id="rpassword" name="rpassword" type="password" class="form-control" data-ng-model="profileSecretForm.rpassword" required/>
+                                <input id="re_new_password" name="re_new_password" type="password" class="form-control" data-ng-model="profileSecretForm.re_new_password" required/>
                             </div>
                             <div class="margin-top-10">
-                                <a name="submitBtn" ng-click="changePassword(profileChangePasswprd)" class="btn green-haze" data-loading-text="Sending...">
-                                Change Password </a>
-                                <a href="#/" class="btn default">
+                                <button type="submit" name="submitBtn" class="btn green-haze"  ng-disabled="changing">
+                                <i ng-class="changing? 'fa fa-spin fa-spinner':'fa fa-save'"></i>
+                                <span ng-hide="changing">Change Password</span>
+                                <span ng-show="changing">Changing</span>
+                                </button>
+                                <a href="{{ $state.href('dashboard') }}" class="btn btn-default">
                                 Cancel </a>
+
                             </div>
                         </form>
                     </div>

@@ -6,7 +6,8 @@ from rest_framework.response import Response
 
 from chills_pos.helpers.utils import PaginationPageSizeMixin
 from pos.models import Product, Customer, Order
-from .serializers import UserSerializer, SessionSerializer, ProductSerializer, CustomerSerializer, OrderSerializer
+from .serializers import UserSerializer, SessionSerializer, ProductSerializer, CustomerSerializer, OrderSerializer, \
+    ProfileSerializer
 
 
 class SessionView(viewsets.ViewSet):
@@ -59,6 +60,22 @@ class SessionView(viewsets.ViewSet):
         return Response({'id': user_id})
 
     create = post  # this is a trick to show this view in api-root
+
+
+class ProfileView(viewsets.ViewSet):
+    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = ProfileSerializer
+
+    def get(self, request):
+        return Response(UserSerializer(request.user).data)
+
+    def put(self, request):
+        serializer = self.serializer_class(instance=request.user, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        return Response(UserSerializer(user).data)
+
+    create = put
 
 
 class ProductView(PaginationPageSizeMixin, viewsets.ModelViewSet):

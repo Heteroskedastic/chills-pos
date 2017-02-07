@@ -185,6 +185,22 @@ app.factory('SessionService', ['$resource', function($resource) {
     });
 }]);
 
+app.factory('ProfileService', ['$resource', function($resource) {
+    return $resource('/api/v1/me/', {}, {
+        get: {
+            method:'GET', params: {nc: Date.now}
+        },
+        update: {
+            method:'PUT'
+        },
+        changePassword: {
+            method: 'POST',
+            url: '/api/v1/me/password/'
+        }
+    });
+}]);
+
+
 app.factory('ProductService', ['$resource', function($resource) {
     return $resource('/api/v1/product/:id', {id: '@id'}, {
         update: {

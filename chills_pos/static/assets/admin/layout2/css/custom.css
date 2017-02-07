@@ -212,3 +212,11 @@ Rounded Portlets
 table .footer td {
     background-color: #f9f9c5;
 }
+
+.text-bold {
+    font-weight: bold;
+}
+
+.text-italic{
+    font-style: italic;
+}

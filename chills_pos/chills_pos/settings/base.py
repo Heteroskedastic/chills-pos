@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'phonenumber_field',
     'dbbackup',
     'rest_framework',
+    'djoser',
     'pos',
 ]
 
