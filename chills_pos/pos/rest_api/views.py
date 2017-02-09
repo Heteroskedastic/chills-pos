@@ -1,13 +1,15 @@
 from django.contrib.auth import logout, login, authenticate
 from django.db import transaction
 from django.db.models import F
+from rest_framework import views
 from rest_framework import viewsets, permissions
+from rest_framework.parsers import FileUploadParser
 from rest_framework.response import Response
 
 from chills_pos.helpers.utils import PaginationPageSizeMixin
-from pos.models import Product, Customer, Order
+from pos.models import Product, Customer, Order, avatar_file_path_func
 from .serializers import UserSerializer, SessionSerializer, ProductSerializer, CustomerSerializer, OrderSerializer, \
-    ProfileSerializer
+    UserProfileSerializer, AvatarSerializer
 
 
 class SessionView(viewsets.ViewSet):
@@ -64,7 +66,7 @@ class SessionView(viewsets.ViewSet):
 
 class ProfileView(viewsets.ViewSet):
     permission_classes = (permissions.IsAuthenticated,)
-    serializer_class = ProfileSerializer
+    serializer_class = UserProfileSerializer
 
     def get(self, request):
         return Response(UserSerializer(request.user).data)
@@ -74,6 +76,38 @@ class ProfileView(viewsets.ViewSet):
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
         return Response(UserSerializer(user).data)
+
+    create = put
+
+
+class AvatarView(viewsets.ViewSet):
+    permission_classes = (permissions.IsAuthenticated,)
+    parser_classes = (FileUploadParser,)
+
+    def get(self, request):
+        avatar_url = None
+        if request.user.profile.avatar:
+            avatar_url = request.user.profile.avatar.url
+        return Response({'avatar': avatar_url})
+
+    def put(self, request, **kwargs):
+        profile = request.user.profile
+        file_obj = request.data['file']
+        serializer = AvatarSerializer(instance=profile, data={'avatar': file_obj})
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        avatar_url = None
+        if profile.avatar:
+            avatar_url = profile.avatar.url
+        print("Finished!")
+        return Response({'avatar': avatar_url})
+
+    def delete(self, request, **kwargs):
+        profile = request.user.profile
+        profile.avatar = None
+        profile.save()
+
+        return Response({'avatar': None})
 
     create = put
 

@@ -63,30 +63,122 @@ app.controller("DashboardCtrl", function($scope, $rootScope) {
     // });
 });
 
-app.controller("MyProfileCtrl", function($scope, $rootScope, $http, Utils, ProfileService) {
+app.controller("MyProfileCtrl", function($scope, $rootScope, $http, Utils, ProfileService, $uibModal, $filter) {
     $scope.profileForm = {};
     ProfileService.get(function(response) {
         $rootScope.currentUser = response;
-        $scope.profileForm.first_name = $rootScope.currentUser.first_name;
-        $scope.profileForm.last_name = $rootScope.currentUser.last_name;
-        $scope.profileForm.email = $rootScope.currentUser.email;
+        $scope.profileForm = angular.copy(response);
+        $scope.reform_data();
+        // $scope.profileForm.first_name = $rootScope.currentUser.first_name;
+        // $scope.profileForm.last_name = $rootScope.currentUser.last_name;
+        // $scope.profileForm.email = $rootScope.currentUser.email;
     }, function(response) {
         Utils.showDefaultServerError(response);
     });
     $scope.profileSecretForm = {
     };
+    $scope.reform_data = function () {
+        if ($scope.profileForm.profile.birth_date) {
+            $scope.profileForm.profile.birth_date = new Date($scope.profileForm.profile.birth_date);
+        }
+    };
 
-    $scope.saveProfileInfo = function(form) {
+    $scope.setProfileFile = function (element) {
+        $scope.$apply(function ($scope) {
+            if (element.files.length > 0) {
+                $scope.profile_chosen_file = element.files[0];
+            }
+        });
+    };
+
+    $scope.clearChosenAvatar = function () {
+        $scope.profile_chosen_file = null;
+        angular.element('#profile_image').val('');
+    };
+
+    $scope.updateAvatar = function () {
+        var profile_el = angular.element('#profile_image')[0];
+        if (profile_el.files.length == 0) return;
+        var f = profile_el.files[0],
+            fileName = f.name,
+            r = new FileReader();
+        r.onloadend = function (e) {
+            var data = e.target.result;
+            /*
+             * TODO: that was better to use ProfileService.uploadAvatar. but strange thing is that is so low. then I commented that and used native $http
+             */
+            // ProfileService.uploadAvatar(data, function (response) {
+            //     $scope.clearChosenAvatar();
+            //     $rootScope.currentUser.profile.avatar = response.avatar;
+            //     Utils.showSuccess('Avatar uploaded successfully', 5000);
+            // }, function (response) {
+            //     Utils.showDefaultServerError(response);
+            // }).$promise.finally(function () {
+            //     $scope.uploadingAvatar = false;
+            // });
+            $http({
+                method: 'PUT',
+                url: '/api/v1/me/avatar',
+                data: data,
+                transformRequest: angular.identity,
+                headers: {
+                    'Content-Type': 'application/base64',
+                    'Content-Disposition': 'attachment; filename='+fileName
+                }
+            }).success(function (response) {
+                $scope.clearChosenAvatar();
+                $rootScope.currentUser.profile.avatar = response.avatar;
+                Utils.showSuccess('Avatar uploaded successfully', 5000);
+            }).finally(function () {
+                $scope.uploadingAvatar = false;
+            });
+        };
+        $scope.uploadingAvatar = true;
+        r.readAsDataURL(f);
+    };
+
+    $scope.showDeleteAvatarConfirm = function() {
+        $scope.clearChosenAvatar();
+        $uibModal.open({
+            animation: true,
+            templateUrl: 'app/partials/confirm-modal.html',
+            controller: function($scope, $uibModalInstance, Utils) {
+                $scope.deleting = false;
+                $scope.removeRecord = function () {
+                    $scope.deleting = true;
+                    ProfileService.deleteAvatar(function (response) {
+                        $rootScope.currentUser.profile.avatar = response.avatar;
+                        Utils.showSuccess('Avatar deleted successfully', 5000);
+                        $uibModalInstance.close();
+                    }, function (response) {
+                        Utils.showDefaultServerError(response);
+                    }).$promise.finally(function () {
+                        $scope.deleting = false;
+                    });
+                };
+                $scope.cancelRemove = function () {
+                    $uibModalInstance.dismiss('cancel');
+                };
+            }
+        });
+    };
+
+    $scope.saveProfileInfo = function() {
         $scope.saving = true;
-        ProfileService.update($scope.profileForm, function(response) {
+        var data = angular.copy($scope.profileForm);
+        data.profile.birth_date = $filter('date')(data.profile.birth_date, "yyyy-MM-dd");
+        ProfileService.update(data, function(response) {
             $rootScope.currentUser = response;
-            Utils.showDefaultServerSuccess(response);
+            $scope.profileForm = response;
+            $scope.reform_data();
+            Utils.showSuccess('Profile updated successfully', 5000);
         }, function(response) {
             Utils.showDefaultServerError(response);
         }).$promise.finally(function() {
             $scope.saving = false;
         });
     };
+
     $scope.changePassword = function() {
         $scope.changing = true;
         ProfileService.changePassword($scope.profileSecretForm, function(response) {

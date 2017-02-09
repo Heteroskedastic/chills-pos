@@ -3,22 +3,47 @@ from django.db import IntegrityError
 from django.db import transaction
 from django.db.models import F
 from django.conf import settings
+from phonenumber_field.formfields import PhoneNumberField
 from rest_framework import serializers
 
-from chills_pos.helpers.utils import DynamicFieldsSerializerMixin
-from pos.models import Product, Customer, Order, OrderItem
+from chills_pos.helpers.utils import DynamicFieldsSerializerMixin, Base64ImageField
+from pos.models import Product, Customer, Order, OrderItem, UserProfile
+
+
+class AvatarSerializer(serializers.ModelSerializer):
+    avatar = Base64ImageField()
+    class Meta:
+        model = UserProfile
+        fields = ('avatar',)
+
+
+class NestedProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserProfile
+        fields = ('birth_date', 'phone_number', 'gender', 'avatar')
+        read_only_fields = ('avatar', )
 
 
 class UserSerializer(serializers.ModelSerializer):
+    profile = NestedProfileSerializer()
+
     class Meta:
         model = User
-        exclude = ('password',)
+        fields = ("id", "last_login", "is_superuser", "username", "first_name", "last_name", "email", "is_staff",
+                  "is_active", "date_joined", "groups", "user_permissions", "profile")
 
 
-class ProfileSerializer(serializers.ModelSerializer):
+class UserProfileSerializer(serializers.ModelSerializer):
+    profile = NestedProfileSerializer()
     class Meta:
         model = User
-        fields = ('first_name', 'last_name', 'email',)
+        fields = ('first_name', 'last_name', 'email', 'profile', )
+
+    def update(self, instance, validated_data):
+        profile = validated_data.pop('profile', {}) or {}
+        for k, v in profile.items():
+            setattr(instance.profile, k, v)
+        return super(UserProfileSerializer, self).update(instance, validated_data)
 
 
 class SessionSerializer(serializers.Serializer):

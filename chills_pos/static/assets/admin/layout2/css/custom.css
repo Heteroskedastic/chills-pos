@@ -220,3 +220,44 @@ table .footer td {
 .text-italic{
     font-style: italic;
 }
+
+.img-avatar {
+  display: inline-block !important;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+}
+.img-avatar.img-avatar16 {
+  width: 16px;
+  height: 16px;
+}
+.img-avatar.img-avatar32 {
+  width: 32px;
+  height: 32px;
+}
+.img-avatar.img-avatar40 {
+  width: 40px;
+  height: 40px;
+}
+.img-avatar.img-avatar48 {
+  width: 48px;
+  height: 48px;
+}
+.img-avatar.img-avatar96 {
+  width: 96px;
+  height: 96px;
+}
+.img-avatar.img-avatar128 {
+  width: 128px;
+  height: 128px;
+}
+.img-avatar-thumb {
+  margin: 5px;
+  -webkit-box-shadow: 0 0 0 5px rgba(255, 255, 255, 0.4);
+  box-shadow: 0 0 0 5px rgba(255, 255, 255, 0.4);
+}
+.img-thumb {
+  padding: 5px;
+  background-color: #fff;
+  border-radius: 2px;
+}

@@ -17,17 +17,52 @@
                 </div>
                 <ul class="nav nav-tabs">
                     <li class="active">
-                        <a data-target="#tab_1_1" data-toggle="tab">Personal Info</a>
+                        <a data-target="#tab_personal_info" data-toggle="tab">Personal Info</a>
                     </li>
                     <li>
-                        <a data-target="#tab_1_2" data-toggle="tab">Change Password</a>
+                        <a data-target="#tab_change_avatar" data-toggle="tab">Change Avatar</a>
+                    </li>
+                    <li>
+                        <a data-target="#tab_change_password" data-toggle="tab">Change Password</a>
                     </li>
                 </ul>
             </div>
             <div class="portlet-body">
                 <div class="tab-content">
                     <!-- PERSONAL INFO TAB -->
-                    <div class="tab-pane active" id="tab_1_1">
+                    <div class="tab-pane" id="tab_change_avatar">
+                        <div class="push-30-t push animated fadeInDown">
+                            <img class="img-avatar img-avatar128 img-avatar-thumb" ng-src="{{ currentUser.profile.avatar|default:'/static/assets/global/img/avatar_blank.jpg' }}"
+                                 err-src="/static/assets/global/img/avatar_blank.jpg" alt="">
+                        </div>
+                        <div class="">
+                            <button ng-show="currentUser.profile.avatar" class="btn btn-sm btn-danger" type="button"
+                                    ng-click="showDeleteAvatarConfirm()" ng-disabled="deletingAvatar">
+                                <span ng-show="!deletingAvatar"><i
+                                        class="fa fa-trash push-5-r"></i> Delete Avatar</span>
+                                <span ng-show="deletingAvatar"><i class="fa fa-spinner fa-spin push-5-r"></i> Deleting ...</span>
+                            </button>
+                            <button class="btn btn-sm btn-primary" type="button" ng-click="updateAvatar()"
+                                    ng-disabled="!profile_chosen_file || uploadingAvatar" title="
+                                    {{ profile_chosen_file ? 'Push to upload chosen avatar' : 'No new avatar chosen!'}}">
+                                <span ng-show="!uploadingAvatar"><i
+                                        class="fa fa-upload push-5-r"></i> Upload Avatar</span>
+                                <span ng-show="uploadingAvatar"><i class="fa fa-spinner fa-spin push-5-r"></i> Uploading ...</span>
+                            </button>
+                            <label class="btn btn-default btn-sm" ng-disabled="uploadingAvatar"><span
+                                    class="fa fa-file-photo-o"></span>
+                                Choose Avatar <input type="file" id="profile_image" name="profile_image"
+                                                     accept="image/jpeg, image/png" style="display: none;"
+                                                     onchange="angular.element(this).scope().setProfileFile(this)">
+                            </label>
+                            <span ng-show="profile_chosen_file">{{ profile_chosen_file.name }}
+                                <button class="btn btn-link" ng-click="clearChosenAvatar()" title="Clear chosen image"><span class="fa fa-close"></span></button>
+                            </span>
+                            <span ng-show="!profile_chosen_file" class="text-muted">No Image Chosen</span>
+                        </div>
+                    </div>
+                    <!-- PERSONAL INFO TAB -->
+                    <div class="tab-pane active" id="tab_personal_info">
                         <form name="profilePersonalInfo" role="form" ng-submit="saveProfileInfo()">
                             <div class="form-group">
                                 <label class="control-label">Username</label>
@@ -45,6 +80,37 @@
                                 <label class="control-label">E-mail</label>
                                 <input type="text" placeholder="example@email.com" class="form-control" data-ng-model="profileForm.email"/>
                             </div>
+                            <div class="form-group">
+                                <label class="control-label">Phone Number</label>
+                                <input type="text" placeholder="+xxxxxxxxxxxx" class="form-control" data-ng-model="profileForm.profile.phone_number"/>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Gender</label>
+                                <div>
+                                    <label class="radio-inline">
+                                        <input type="radio" data-ng-model="profileForm.profile.gender" value="m">Male
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" data-ng-model="profileForm.profile.gender" value="f">Female
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" data-ng-model="profileForm.profile.gender" value="u">Unknown
+                                    </label>
+                                </div>
+
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Birth Date</label>
+                                <p class="input-group">
+                                    <input type="text" placeholder="Visit Date" class="form-control"
+                                           uib-datepicker-popup="yyyy-MM-dd" data-ng-model="profileForm.profile.birth_date"
+                                           is-open="popup1.opened" ng-required="true" close-text="Close"
+                                           alt-input-formats="altInputFormats"/>
+                                    <span class="input-group-btn">
+                                        <button type="button" class="btn btn-default" ng-click="popup1.opened=true"><i class="glyphicon glyphicon-calendar"></i></button>
+                                    </span>
+                                </p>
+                            </div>
                             <div class="margiv-top-10">
                                 <button type="submit" name="submitBtn" class="btn green-haze"  ng-disabled="saving">
                                 <i ng-class="saving? 'fa fa-spin fa-spinner':'fa fa-save'"></i>
@@ -59,7 +125,7 @@
                     </div>
                     <!-- END PERSONAL INFO TAB -->
                     <!-- CHANGE PASSWORD TAB -->
-                    <div class="tab-pane" id="tab_1_2">
+                    <div class="tab-pane" id="tab_change_password">
                         <form name="profileChangePassword" ng-submit="changePassword()">
                             <div class="form-group">
                                 <label class="control-label">Current Password</label>

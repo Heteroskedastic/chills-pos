@@ -1,3 +1,5 @@
+import uuid
+import base64
 import random
 import string
 import datetime
@@ -19,6 +21,8 @@ from rest_framework.pagination import PageNumberPagination, _positive_int
 from rest_framework.views import exception_handler
 from rest_framework import exceptions
 from rest_framework.response import Response
+from django.core.files.base import ContentFile
+from rest_framework import serializers
 
 from chills_pos.helpers.shortcuts import get_twilio_client
 
@@ -327,3 +331,14 @@ class DynamicFieldsSerializerMixin(object):
             xfields = xfields.split(',')
             for field_name in xfields:
                 self.fields.pop(field_name, None)
+
+
+class Base64ImageField(serializers.ImageField):
+    def to_internal_value(self, data):
+        data = data.read().decode()
+        if data.startswith('data:image'):
+            format, imgstr = data.split(';base64,') # format ~= data:image/X,
+            ext = format.split('/')[-1] # guess file extension
+            id = uuid.uuid4()
+            data = ContentFile(base64.b64decode(imgstr), name = id.urn[9:] + '.' + ext)
+        return super(Base64ImageField, self).to_internal_value(data)

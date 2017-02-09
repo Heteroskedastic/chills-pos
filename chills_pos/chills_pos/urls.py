@@ -13,14 +13,16 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
+from django.conf import settings
 from django.conf.urls import url, include
 from django.contrib import admin
 from djoser.views import SetPasswordView
 from rest_framework import routers
 from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token, \
     verify_jwt_token
+from django.views.static import serve
 
-from pos.rest_api.views import SessionView, ProductView, CustomerView, OrderView, ProfileView
+from pos.rest_api.views import SessionView, ProductView, CustomerView, OrderView, ProfileView, AvatarView
 
 # register all rest views here
 from pos.views import IndexView, LoginView
@@ -29,6 +31,7 @@ rest_router = routers.DefaultRouter()
 rest_router.trailing_slash = "/?"  # added to support both / and slashless
 rest_router.register(r'session', SessionView, base_name='session')
 rest_router.register(r'me', ProfileView, base_name='profile')
+rest_router.register(r'me/avatar', AvatarView, base_name='avatar')
 rest_router.register(r'product', ProductView, base_name='product')
 rest_router.register(r'customer', CustomerView, base_name='customer')
 rest_router.register(r'order', OrderView, base_name='order')
@@ -47,3 +50,9 @@ urlpatterns = [
     url(r'^$', IndexView.as_view(), name='index'),
     url(r'^login/$', LoginView.as_view(), name="login"),
 ]
+
+if settings.DEBUG:
+    urlpatterns.append(
+        url(r'^media/(.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
+    )
+

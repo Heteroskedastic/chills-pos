@@ -1,7 +1,43 @@
+import os
+import uuid
+
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator
 from django.db import models
-from django.db.models import Sum, F, FloatField
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from phonenumber_field.modelfields import PhoneNumberField
+
+from chills_pos.helpers.utils import random_id
+
+
+def get_random_upload_path(upload_dir, filename):
+    ext = filename.split('.')[-1]
+    randid = random_id(n=16)
+    filename = "{0}-{1}.{2}".format(uuid.uuid4(), randid, ext)
+    return os.path.join(upload_dir, filename)
+
+
+def avatar_file_path_func(instance, filename):
+    return get_random_upload_path(os.path.join('uploads', 'profile_avatar'), filename)
+
+
+class UserProfile(models.Model):
+    GENDER_UNKNOWN = 'u'
+    GENDER_MALE = 'm'
+    GENDER_FEMALE = 'f'
+    GENDER_CHOICES = (
+        (GENDER_UNKNOWN, 'Unknown'),
+        (GENDER_MALE, 'Male'),
+        (GENDER_FEMALE, 'Female'),
+    )
+
+    user = models.OneToOneField(User, primary_key=True, related_name='profile', on_delete=models.CASCADE)
+    birth_date = models.DateField('Date of birth', blank=True, null=True)
+    phone_number = PhoneNumberField('Phone number', blank=True, null=True)
+    gender = models.CharField('Gender', max_length=1, choices=GENDER_CHOICES, default=GENDER_UNKNOWN)
+    avatar = models.ImageField('Avatar', blank=True, null=True, upload_to=avatar_file_path_func)
+
 
 
 class Product(models.Model):
@@ -74,15 +110,6 @@ class Order(models.Model):
     def total_items(self):
         return self.order_items.count() or 0
 
-    # @property
-    # def total_quantity(self):
-    #     return self.order_items.aggregate(total_quantity=Sum('quantity'))['total_quantity'] or 0
-    #
-    # @property
-    # def total_price(self):
-    #     return self.order_items.aggregate(
-    #         total_price=Sum(F('quantity') * F('product__price'), output_field=FloatField()))['total_price'] or 0
-
     def __str__(self):
         return '{}'.format(self.customer)
 
@@ -98,3 +125,14 @@ class OrderItem(models.Model):
 
     class Meta:
         unique_together = (('order', 'product'),)
+
+
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        UserProfile.objects.create(user=instance)
+
+
+@receiver(post_save, sender=User)
+def save_user_profile(sender, instance, **kwargs):
+    instance.profile.save()

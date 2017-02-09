@@ -195,6 +195,19 @@ app.factory('ProfileService', ['$resource', function($resource) {
         changePassword: {
             method: 'POST',
             url: '/api/v1/me/password/'
+        },
+        uploadAvatar: {
+            method: 'PUT',
+            url: '/api/v1/me/avatar/',
+            transformRequest: angular.identity,
+            headers: {
+                'Content-Type': 'application/base64',
+                'Content-Disposition': 'attachment; filename=test.jpg'
+            }
+        },
+        deleteAvatar: {
+            method: 'DELETE',
+            url: '/api/v1/me/avatar/'
         }
     });
 }]);

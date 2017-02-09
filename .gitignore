@@ -90,3 +90,6 @@ ENV/
 
 # pycharm settings
 .idea/
+
+# django media
+media/
