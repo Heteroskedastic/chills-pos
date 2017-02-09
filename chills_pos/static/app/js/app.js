@@ -55,6 +55,38 @@ app.config(function($stateProvider, $urlRouterProvider) {
             }
         },
         controller  : 'ProductEditCtrl'
+    }).state('unit-list', {
+        url: "/unit/list",
+        templateUrl : 'app/partials/pages/unit/list.html',
+        data: {
+            pageInfo: {
+                title: 'Units',
+                titleDesc: 'list of units'
+            }
+        },
+        controller  : 'UnitListCtrl'
+    }).state('unit-new', {
+        url: "/unit/new",
+        templateUrl : 'app/partials/pages/unit/new.html',
+        data: {
+            pageInfo: {
+                title: 'New Unit',
+                titleDesc: 'add a new unit',
+                back: 'unit-list'
+            }
+        },
+        controller  : 'UnitNewCtrl'
+    }).state('unit-edit', {
+        url: "/unit/:id/edit",
+        templateUrl : 'app/partials/pages/unit/edit.html',
+        data: {
+            pageInfo: {
+                title: 'Edit Unit',
+                titleDesc: 'edit an existing unit',
+                back: 'unit-list'
+            }
+        },
+        controller  : 'UnitEditCtrl'
     }).state('customer-list', {
         url: "/customer/list",
         templateUrl : 'app/partials/pages/customer/list.html',

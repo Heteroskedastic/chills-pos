@@ -55,11 +55,20 @@ class Product(models.Model):
         return self.name
 
 
+class Unit(models.Model):
+    name = models.CharField("Name", max_length=256)
+    description = models.TextField("Description", max_length=1024, null=True, blank=True)
+
+    def __str__(self):
+        return self.name
+
+
 class Customer(models.Model):
     first_name = models.CharField("First Name", max_length=256)
     last_name = models.CharField("Last Name", max_length=256)
     uid = models.CharField('Id Number', max_length=256, null=True, blank=True, unique=True)
     points = models.PositiveIntegerField('Points', default=0)
+    unit = models.ForeignKey(Unit, null=True, related_name='customer', on_delete=models.SET_NULL)
 
     def __str__(self):
         return '{} {}'.format(self.first_name, self.last_name)

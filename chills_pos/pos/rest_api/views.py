@@ -1,15 +1,14 @@
 from django.contrib.auth import logout, login, authenticate
 from django.db import transaction
 from django.db.models import F
-from rest_framework import views
 from rest_framework import viewsets, permissions
 from rest_framework.parsers import FileUploadParser
 from rest_framework.response import Response
 
 from chills_pos.helpers.utils import PaginationPageSizeMixin
-from pos.models import Product, Customer, Order, avatar_file_path_func
+from pos.models import Product, Customer, Order, Unit
 from .serializers import UserSerializer, SessionSerializer, ProductSerializer, CustomerSerializer, OrderSerializer, \
-    UserProfileSerializer, AvatarSerializer
+    UserProfileSerializer, AvatarSerializer, UnitSerializer
 
 
 class SessionView(viewsets.ViewSet):
@@ -120,6 +119,18 @@ class ProductView(PaginationPageSizeMixin, viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     filter_fields = ('name', 'upc', 'part_number', 'active',)
+    ordering_fields = '__all__'
+    ordering = ('id',)
+
+
+class UnitView(PaginationPageSizeMixin, viewsets.ModelViewSet):
+    '''
+    rest view for Organization resource
+    '''
+    max_page_size = 0
+    queryset = Unit.objects.all()
+    serializer_class = UnitSerializer
+    filter_fields = ('name',)
     ordering_fields = '__all__'
     ordering = ('id',)
 

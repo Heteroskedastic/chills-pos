@@ -7,7 +7,7 @@ from phonenumber_field.formfields import PhoneNumberField
 from rest_framework import serializers
 
 from chills_pos.helpers.utils import DynamicFieldsSerializerMixin, Base64ImageField
-from pos.models import Product, Customer, Order, OrderItem, UserProfile
+from pos.models import Product, Customer, Order, OrderItem, UserProfile, Unit
 
 
 class AvatarSerializer(serializers.ModelSerializer):
@@ -65,7 +65,20 @@ class ProductSerializer(DynamicFieldsSerializerMixin, serializers.ModelSerialize
         fields = '__all__'
 
 
+class UnitSerializer(DynamicFieldsSerializerMixin, serializers.ModelSerializer):
+    class Meta:
+        model = Unit
+        fields = '__all__'
+
+
+class NestedUnitSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Unit
+        fields = ('id', 'name',)
+
+
 class CustomerSerializer(DynamicFieldsSerializerMixin, serializers.ModelSerializer):
+    _unit = NestedUnitSerializer(read_only=True, source='unit')
     class Meta:
         model = Customer
         fields = '__all__'

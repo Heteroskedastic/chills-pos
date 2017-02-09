@@ -5,10 +5,11 @@ app.controller('PageContentController', function($scope) {
     });
 });
 
-app.controller("MainCtrl", function($scope, $rootScope, $http, $window, Utils, SessionService, ProfileService, CustomerService, ProductService) {
+app.controller("MainCtrl", function($scope, $rootScope, $http, $window, Utils, SessionService, ProfileService, CustomerService, ProductService, UnitService) {
     // load current user
     $rootScope.currentUser = {};
     $rootScope.pageLoaded = false;
+    $rootScope.$global.Unit = {};
     $rootScope.$global.Customer = {};
     $rootScope.$global.Product = {};
     $rootScope.$global.Order = {};
@@ -52,6 +53,14 @@ app.controller("MainCtrl", function($scope, $rootScope, $http, $window, Utils, S
         if (!$rootScope.$global.Product.comboData) {
             ProductService.query({page_size: 0, ordering: 'name', fields: 'id,name,quantity,upc,part_number,price', active:true}, function(response) {
                 $rootScope.$global.Product.comboData = response.results;
+            });
+        }
+    };
+
+    $rootScope.loadUnitCombo = function() {
+        if (!$rootScope.$global.Unit.comboData) {
+            UnitService.query({page_size: 0, ordering: 'name', fields: 'id,name'}, function(response) {
+                $rootScope.$global.Unit.comboData = response.results;
             });
         }
     };
@@ -387,6 +396,9 @@ app.controller("CustomerListCtrl", function($scope, $rootScope, $state, $statePa
                 },
                 {name: 'uid', 'displayName': 'UID'},
                 {name: 'points', 'displayName': 'Points'},
+                {name: 'unit', 'displayName': 'Unit',
+                    cellTemplate: '<div class="ui-grid-cell-contents ng-binding ng-scope">{{row.entity._unit.name|default:"-"}}</div>'
+                }
             ]
             // onRegisterApi: GeneralUiGrid.onRegisterApi($scope)
         };
@@ -412,6 +424,8 @@ app.controller("CustomerListCtrl", function($scope, $rootScope, $state, $statePa
 app.controller("CustomerNewCtrl", function($scope, $rootScope, $state,$stateParams, CustomerService, Utils) {
     var $global = $rootScope.$global.Customer;
     $scope.selectedRecord = new CustomerService({quantity: 0, reorder_limit: 0, active: true});
+    $rootScope.loadUnitCombo();
+
     $scope.addRecord = function() {
         $scope.saving = true;
         $scope.selectedRecord.$save().then(function(response) {
@@ -431,6 +445,7 @@ app.controller("CustomerNewCtrl", function($scope, $rootScope, $state,$statePara
 
 app.controller("CustomerEditCtrl", function($scope, $rootScope, $state,$stateParams, CustomerService, Utils, $uibModal) {
     var $global = $rootScope.$global.Customer;
+    $rootScope.loadUnitCombo();
 
     $scope.showDeleteConfirm = function() {
         if (!$scope.selectedRecord) {
@@ -497,6 +512,154 @@ app.controller("CustomerEditCtrl", function($scope, $rootScope, $state,$statePar
         }, function(response) {
             Utils.showDefaultServerError(response);
             $state.go('customer-list');
+        });
+    };
+    $scope.loadRecord();
+});
+
+/******************************************************************
+********************* Unit controllers *****************
+*******************************************************************/
+
+app.controller("UnitListCtrl", function($scope, $rootScope, $state, $stateParams, UnitService, Utils, GeneralUiGrid) {
+    $scope.loadingGrid = false;
+    $scope.sortingOptions = null;
+    $scope.filteringOptions = [];
+    $scope.paginationOptions = {
+        page: 1
+    };
+    if (!$rootScope.$global.Unit) {
+        $rootScope.$global.Unit = {}
+    }
+
+    var initialized = true,
+        $global = $rootScope.$global.Unit;
+    if (!$global.gridOptions) {
+        initialized = false;
+        $global.gridOptions = {
+            paginationPageSizes: [10, 20, 30, 50, 100, 200],
+            paginationPageSize: 10,
+            useExternalPagination: true,
+            useExternalSorting: true,
+            rowHeight: 35,
+            columnDefs: [
+                {name: 'id', 'displayName': 'ID', width: 60,
+                    cellTemplate: '<div class="ui-grid-cell-contents ng-binding ng-scope"><a class="text text-primary" href="{{grid.appScope.$state.href(\'unit-edit\', {id: row.entity.id})}}">{{row.entity.id}}</a></div>'
+                },
+                {name: 'name', 'displayName': 'Name',
+                    cellTemplate: '<div class="ui-grid-cell-contents ng-binding ng-scope"><a class="text text-primary" href="{{grid.appScope.$state.href(\'unit-edit\', {id: row.entity.id})}}">{{row.entity.name}}</a></div>'
+                },
+                {name: 'description', 'displayName': 'Description', cellFilter: 'default:"-"'}
+            ]
+            // onRegisterApi: GeneralUiGrid.onRegisterApi($scope)
+        };
+    }
+    $global.gridOptions.onRegisterApi = GeneralUiGrid.onRegisterApi($scope);
+    $scope.getPage = GeneralUiGrid.getPage($scope, UnitService, $global.gridOptions);
+    if (!initialized) {
+        $scope.getPage();
+    }
+
+    $scope.refreshData = function () {
+        $scope.getPage();
+    };
+
+    $scope.getDisplayType = function(type) {
+        var choice = $global.typeChoices.filter(function(v) {
+            return v.value==type
+        })[0];
+        return choice? choice.display_name: type;
+    };
+});
+
+app.controller("UnitNewCtrl", function($scope, $rootScope, $state,$stateParams, UnitService, Utils) {
+    var $global = $rootScope.$global.Unit;
+    $scope.selectedRecord = new UnitService({quantity: 0, reorder_limit: 0, active: true});
+    $scope.addRecord = function() {
+        $scope.saving = true;
+        $scope.selectedRecord.$save().then(function(response) {
+            if ($global && $global.gridOptions) {
+                $global.gridOptions.data.splice(0, 0, response);
+            }
+            $rootScope.$global.Unit.comboData = undefined;
+            $state.go('unit-list');
+            Utils.showDefaultServerSuccess(response);
+        }, function(response) {
+            Utils.showDefaultServerError(response);
+        }).finally(function() {
+            $scope.saving = false;
+        });
+    };
+
+});
+
+app.controller("UnitEditCtrl", function($scope, $rootScope, $state,$stateParams, UnitService, Utils, $uibModal) {
+    var $global = $rootScope.$global.Unit;
+
+    $scope.showDeleteConfirm = function() {
+        if (!$scope.selectedRecord) {
+            return;
+        }
+        var id = $scope.selectedRecord.id;
+        var data = $global.gridOptions? $global.gridOptions.data: [];
+        var idx = Utils.findByProperty(data, 'id', id),
+            gridOptions = $global.gridOptions;
+
+        var modalInstance = $uibModal.open({
+            animation: true,
+            templateUrl: 'app/partials/confirm-modal.html',
+            controller: function($scope, $uibModalInstance, Utils) {
+                $scope.selectedId = id;
+                $scope.deleting = false;
+                $scope.removeRecord = function () {
+                    $scope.deleting = true;
+                    UnitService.delete({id: $scope.selectedId}, function(response) {
+                        if (idx >= 0) {
+                            gridOptions.data.splice(idx, 1);
+                        }
+                        $rootScope.$global.Unit.comboData = undefined;
+                        Utils.showDefaultServerSuccess(response);
+                        $uibModalInstance.close();
+                        $state.go('unit-list');
+                    }, function(response) {
+                        Utils.showDefaultServerError(response);
+                    }).$promise.finally(function() {
+                        $scope.deleting = false;
+                    })
+
+                };
+                $scope.cancelRemove = function () {
+                    $uibModalInstance.dismiss('cancel');
+                };
+            }
+        });
+    };
+    $scope.updateRecord = function() {
+        if (!$scope.selectedRecord) {
+            return;
+        }
+        $scope.saving = true;
+        $scope.selectedRecord.$update().then(function(response) {
+            var data = $global.gridOptions? $global.gridOptions.data: [];
+            var idx = Utils.findByProperty(data, 'id', response.id);
+            if (idx >= 0) {
+                $global.gridOptions.data[idx] = response;
+            }
+            $rootScope.$global.Unit.comboData = undefined;
+            $state.go('unit-list');
+            Utils.showDefaultServerSuccess(response);
+        }, function(response) {
+            Utils.showDefaultServerError(response);
+        }).finally(function() {
+            $scope.saving = false;
+        });
+    };
+    $scope.loadRecord=function() {
+        UnitService.get({id: $stateParams.id}, function(record) {
+            $scope.selectedRecord = record;
+        }, function(response) {
+            Utils.showDefaultServerError(response);
+            $state.go('unit-list');
         });
     };
     $scope.loadRecord();

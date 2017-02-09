@@ -235,6 +235,17 @@ app.factory('CustomerService', ['$resource', function($resource) {
     });
 }]);
 
+app.factory('UnitService', ['$resource', function($resource) {
+    return $resource('/api/v1/unit/:id', {id: '@id'}, {
+        update: {
+            method: 'PUT'
+        },
+        query: {
+            method:'GET', isArray: false
+        }
+    });
+}]);
+
 app.factory('OrderService', ['$resource', function($resource) {
     return $resource('/api/v1/order/:id', {id: '@id'}, {
         update: {

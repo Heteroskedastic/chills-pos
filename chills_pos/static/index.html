@@ -185,6 +185,13 @@ body {
                     <span class="selected"></span>
                     </a>
                 </li>
+                <li class="start" data-ng-class="menuActiveIf('unit-list', 'unit-new', 'unit-edit')">
+                    <a href="{{ $state.href('unit-list') }}">
+                    <i class="fa fa-th-large"></i>
+                    <span class="title">{{ $state.get('unit-list').data.pageInfo.title }}</span>
+                    <span class="selected"></span>
+                    </a>
+                </li>
             </ul>
             <!-- END SIDEBAR MENU -->
         </div>
