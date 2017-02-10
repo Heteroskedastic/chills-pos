@@ -202,7 +202,7 @@ app.factory('ProfileService', ['$resource', function($resource) {
             transformRequest: angular.identity,
             headers: {
                 'Content-Type': 'application/base64',
-                'Content-Disposition': 'attachment; filename=test.jpg'
+                'Content-Disposition': 'attachment; filename=AVATAR'
             }
         },
         deleteAvatar: {
@@ -231,6 +231,19 @@ app.factory('CustomerService', ['$resource', function($resource) {
         },
         query: {
             method:'GET', isArray: false
+        },
+        uploadPhoto: {
+            method: 'PUT',
+            url: '/api/v1/customer/:id/photo',
+            transformRequest: angular.identity,
+            headers: {
+                'Content-Type': 'application/base64',
+                'Content-Disposition': 'attachment; filename=PHOTO'
+            }
+        },
+        deletePhoto: {
+            method: 'DELETE',
+            url: '/api/v1/customer/:id/photo'
         }
     });
 }]);

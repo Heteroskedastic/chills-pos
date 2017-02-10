@@ -138,6 +138,8 @@ app.controller("MyProfileCtrl", function($scope, $rootScope, $http, Utils, Profi
                 $scope.clearChosenAvatar();
                 $rootScope.currentUser.profile.avatar = response.avatar;
                 Utils.showSuccess('Avatar uploaded successfully', 5000);
+            }).error(function (response) {
+                Utils.showDefaultServerError(response);
             }).finally(function () {
                 $scope.uploadingAvatar = false;
             });
@@ -421,10 +423,59 @@ app.controller("CustomerListCtrl", function($scope, $rootScope, $state, $statePa
     };
 });
 
-app.controller("CustomerNewCtrl", function($scope, $rootScope, $state,$stateParams, CustomerService, Utils) {
+app.controller("CustomerNewCtrl", function($scope, $rootScope, $state,$stateParams, CustomerService, Utils, $http) {
     var $global = $rootScope.$global.Customer;
     $scope.selectedRecord = new CustomerService({quantity: 0, reorder_limit: 0, active: true});
     $rootScope.loadUnitCombo();
+
+    $scope.setCustomerFile = function (element) {
+        $scope.$apply(function ($scope) {
+            if (element.files.length > 0) {
+                $scope.customer_chosen_file = element.files[0];
+            }
+        });
+    };
+
+    $scope.clearChosenPhoto = function () {
+        $scope.customer_chosen_file = null;
+        angular.element('#customer_image').val('');
+    };
+
+    $scope.updatePhoto = function (callback, errCallback) {
+        var customer_el = angular.element('#customer_image')[0];
+        if (customer_el.files.length == 0) return;
+        var f = customer_el.files[0],
+            fileName = f.name,
+            r = new FileReader(),
+            recordId = $scope.selectedRecord.id;
+        r.onloadend = function (e) {
+            var data = e.target.result;
+            /*
+             * TODO: that was better to use CustomerService.uploadPhoto. but strange thing is that is so low.
+             */
+            $http({
+                method: 'PUT',
+                url: '/api/v1/customer/'+recordId+'/photo/',
+                data: data,
+                transformRequest: angular.identity,
+                headers: {
+                    'Content-Type': 'application/base64',
+                    'Content-Disposition': 'attachment; filename='+fileName
+                }
+            }).success(function (response) {
+                $scope.clearChosenPhoto();
+                $scope.selectedRecord.photo = response.photo;
+                callback && callback();
+            }).error(function (response) {
+                Utils.showDefaultServerError(response);
+                errCallback && errCallback();
+            }).finally(function () {
+                $scope.uploadingPhoto = false;
+            });
+        };
+        $scope.uploadingPhoto = true;
+        r.readAsDataURL(f);
+    };
 
     $scope.addRecord = function() {
         $scope.saving = true;
@@ -433,8 +484,16 @@ app.controller("CustomerNewCtrl", function($scope, $rootScope, $state,$statePara
                 $global.gridOptions.data.splice(0, 0, response);
             }
             $rootScope.$global.Customer.comboData = undefined;
-            $state.go('customer-list');
-            Utils.showDefaultServerSuccess(response);
+            var photo_el = angular.element('#customer_image')[0];
+            if (photo_el.files.length > 0) {
+                $scope.updatePhoto(function () {
+                    $state.go('customer-list');
+                    Utils.showDefaultServerSuccess(response);
+                });
+            } else {
+                $state.go('customer-list');
+                Utils.showDefaultServerSuccess(response);
+            }
         }, function(response) {
             Utils.showDefaultServerError(response);
         }).finally(function() {
@@ -443,9 +502,74 @@ app.controller("CustomerNewCtrl", function($scope, $rootScope, $state,$statePara
     };
 });
 
-app.controller("CustomerEditCtrl", function($scope, $rootScope, $state,$stateParams, CustomerService, Utils, $uibModal) {
+app.controller("CustomerEditCtrl", function($scope, $rootScope, $state,$stateParams, CustomerService, Utils, $uibModal, $http) {
     var $global = $rootScope.$global.Customer;
+    $scope.deleting_photo = false;
     $rootScope.loadUnitCombo();
+
+    $scope.setCustomerFile = function (element) {
+        $scope.$apply(function ($scope) {
+            if (element.files.length > 0) {
+                $scope.customer_chosen_file = element.files[0];
+            }
+        });
+    };
+
+    $scope.clearChosenPhoto = function () {
+        $scope.customer_chosen_file = null;
+        angular.element('#customer_image').val('');
+    };
+
+    $scope.deleteCurrentPhoto = function () {
+        $scope.selectedRecord.photo = null;
+        $scope.deleting_photo = true;
+    };
+
+    $scope.updatePhoto = function (callback, errCallback) {
+        var customer_el = angular.element('#customer_image')[0];
+        if (customer_el.files.length == 0) return;
+        var f = customer_el.files[0],
+            fileName = f.name,
+            r = new FileReader(),
+            recordId = $scope.selectedRecord.id;
+        r.onloadend = function (e) {
+            var data = e.target.result;
+            /*
+             * TODO: that was better to use CustomerService.uploadPhoto. but strange thing is that is so low.
+             */
+            $http({
+                method: 'PUT',
+                url: '/api/v1/customer/'+recordId+'/photo/',
+                data: data,
+                transformRequest: angular.identity,
+                headers: {
+                    'Content-Type': 'application/base64',
+                    'Content-Disposition': 'attachment; filename='+fileName
+                }
+            }).success(function (response) {
+                $scope.clearChosenPhoto();
+                $scope.selectedRecord.photo = response.photo;
+                callback && callback();
+            }).error(function (response) {
+                Utils.showDefaultServerError(response);
+                errCallback && errCallback();
+            }).finally(function () {
+                $scope.uploadingPhoto = false;
+            });
+        };
+        $scope.uploadingPhoto = true;
+        r.readAsDataURL(f);
+    };
+
+    $scope.deletePhoto = function (callback, errCallback) {
+        CustomerService.deletePhoto({id: $scope.selectedRecord.id}, function (response) {
+            $scope.selectedRecord.photo = response.photo;
+            callback && callback();
+        }, function (response) {
+            Utils.showDefaultServerError(response);
+            errCallback && errCallback();
+        });
+    };
 
     $scope.showDeleteConfirm = function() {
         if (!$scope.selectedRecord) {
@@ -492,14 +616,31 @@ app.controller("CustomerEditCtrl", function($scope, $rootScope, $state,$statePar
         }
         $scope.saving = true;
         $scope.selectedRecord.$update().then(function(response) {
+            if ($scope.deleting_photo) {
+                $scope.selectedRecord.photo = null;
+            }
             var data = $global.gridOptions? $global.gridOptions.data: [];
             var idx = Utils.findByProperty(data, 'id', response.id);
             if (idx >= 0) {
                 $global.gridOptions.data[idx] = response;
             }
             $rootScope.$global.Customer.comboData = undefined;
-            $state.go('customer-list');
-            Utils.showDefaultServerSuccess(response);
+            var photo_el = angular.element('#customer_image')[0];
+            if (photo_el.files.length > 0) {
+                $scope.updatePhoto(function () {
+                    $state.go('customer-list');
+                    Utils.showDefaultServerSuccess(response);
+                });
+            } else if($scope.deleting_photo) {
+                $scope.deletePhoto(function () {
+                    $scope.deleting_photo = false;
+                    $state.go('customer-list');
+                    Utils.showDefaultServerSuccess(response);
+                });
+            } else {
+                $state.go('customer-list');
+                Utils.showDefaultServerSuccess(response);
+            }
         }, function(response) {
             Utils.showDefaultServerError(response);
         }).finally(function() {

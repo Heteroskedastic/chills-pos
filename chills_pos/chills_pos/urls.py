@@ -22,7 +22,7 @@ from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token, \
     verify_jwt_token
 from django.views.static import serve
 
-from pos.rest_api.views import SessionView, ProductView, CustomerView, OrderView, ProfileView, AvatarView, UnitView
+from pos.rest_api.views import SessionView, ProductView, CustomerView, OrderView, ProfileView, UnitView
 
 # register all rest views here
 from pos.views import IndexView, LoginView
@@ -31,7 +31,6 @@ rest_router = routers.DefaultRouter()
 rest_router.trailing_slash = "/?"  # added to support both / and slashless
 rest_router.register(r'session', SessionView, base_name='session')
 rest_router.register(r'me', ProfileView, base_name='profile')
-rest_router.register(r'me/avatar', AvatarView, base_name='avatar')
 rest_router.register(r'product', ProductView, base_name='product')
 rest_router.register(r'unit', UnitView, base_name='unit')
 rest_router.register(r'customer', CustomerView, base_name='customer')

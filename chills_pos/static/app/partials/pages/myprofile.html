@@ -56,7 +56,7 @@
                                                      onchange="angular.element(this).scope().setProfileFile(this)">
                             </label>
                             <span ng-show="profile_chosen_file">{{ profile_chosen_file.name }}
-                                <button class="btn btn-link" ng-click="clearChosenAvatar()" title="Clear chosen image"><span class="fa fa-close"></span></button>
+                                <button type="button" class="btn btn-link" ng-click="clearChosenAvatar()" title="Clear chosen image"><span class="fa fa-close"></span></button>
                             </span>
                             <span ng-show="!profile_chosen_file" class="text-muted">No Image Chosen</span>
                         </div>

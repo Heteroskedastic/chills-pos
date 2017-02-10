@@ -18,7 +18,10 @@
                 <span ng-show="saving">Saving</span>
                 </button>
                 <a href="{{ $state.href('product-list') }}" class="btn btn-default"> Cancel </a>
-                <button type="button" ng-click="showDeleteConfirm()" class="btn btn-danger pull-right"><apan class="fa fa-trash"></apan> Delete </button>
+                <div class="pull-right">
+                    <button type="button" ng-click="loadRecord()" class="btn btn-primary"><apan class="fa fa-refresh"></apan> Refresh </button>
+                    <button type="button" ng-click="showDeleteConfirm()" class="btn btn-danger"><apan class="fa fa-trash"></apan> Delete </button>
+                </div>
             </div>
 
         </form>

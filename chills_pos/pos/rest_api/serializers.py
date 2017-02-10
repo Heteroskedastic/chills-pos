@@ -82,6 +82,14 @@ class CustomerSerializer(DynamicFieldsSerializerMixin, serializers.ModelSerializ
     class Meta:
         model = Customer
         fields = '__all__'
+        read_only_fields = ('photo',)
+
+
+class CustomerPhotoSerializer(serializers.ModelSerializer):
+    photo = Base64ImageField()
+    class Meta:
+        model = Customer
+        fields = ('photo',)
 
 
 class NestedCustomerSerializer(serializers.ModelSerializer):

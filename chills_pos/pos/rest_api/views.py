@@ -2,19 +2,17 @@ from django.contrib.auth import logout, login, authenticate
 from django.db import transaction
 from django.db.models import F
 from rest_framework import viewsets, permissions
+from rest_framework.decorators import detail_route, list_route
 from rest_framework.parsers import FileUploadParser
 from rest_framework.response import Response
 
 from chills_pos.helpers.utils import PaginationPageSizeMixin
 from pos.models import Product, Customer, Order, Unit
 from .serializers import UserSerializer, SessionSerializer, ProductSerializer, CustomerSerializer, OrderSerializer, \
-    UserProfileSerializer, AvatarSerializer, UnitSerializer
+    UserProfileSerializer, AvatarSerializer, UnitSerializer, CustomerPhotoSerializer
 
 
 class SessionView(viewsets.ViewSet):
-    '''
-    rest view set for Session
-    '''
     class SessionPermission(permissions.BasePermission):
         ''' custom class to check permissions for sessions '''
 
@@ -66,8 +64,9 @@ class SessionView(viewsets.ViewSet):
 class ProfileView(viewsets.ViewSet):
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = UserProfileSerializer
+    parser_classes = list(viewsets.ViewSet.parser_classes) + [FileUploadParser]
 
-    def get(self, request):
+    def list(self, request):
         return Response(UserSerializer(request.user).data)
 
     def put(self, request):
@@ -76,20 +75,7 @@ class ProfileView(viewsets.ViewSet):
         user = serializer.save()
         return Response(UserSerializer(user).data)
 
-    create = put
-
-
-class AvatarView(viewsets.ViewSet):
-    permission_classes = (permissions.IsAuthenticated,)
-    parser_classes = (FileUploadParser,)
-
-    def get(self, request):
-        avatar_url = None
-        if request.user.profile.avatar:
-            avatar_url = request.user.profile.avatar.url
-        return Response({'avatar': avatar_url})
-
-    def put(self, request, **kwargs):
+    def __update_avatar(self, request, **kwargs):
         profile = request.user.profile
         file_obj = request.data['file']
         serializer = AvatarSerializer(instance=profile, data={'avatar': file_obj})
@@ -98,23 +84,27 @@ class AvatarView(viewsets.ViewSet):
         avatar_url = None
         if profile.avatar:
             avatar_url = profile.avatar.url
-        print("Finished!")
         return Response({'avatar': avatar_url})
 
-    def delete(self, request, **kwargs):
+    def __delete_avatar(self, request, **kwargs):
         profile = request.user.profile
         profile.avatar = None
         profile.save()
-
         return Response({'avatar': None})
+
+    @list_route(methods=['delete', 'put'])
+    def avatar(self, request, **kwargs):
+        if self.request.method == 'DELETE':
+            return self.__delete_avatar(request, **kwargs)
+        elif self.request.method == 'PUT':
+            return self.__update_avatar(request, **kwargs)
+
+        raise Exception('should not reach here!')
 
     create = put
 
 
 class ProductView(PaginationPageSizeMixin, viewsets.ModelViewSet):
-    '''
-    rest view for Organization resource
-    '''
     max_page_size = 0
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
@@ -124,9 +114,6 @@ class ProductView(PaginationPageSizeMixin, viewsets.ModelViewSet):
 
 
 class UnitView(PaginationPageSizeMixin, viewsets.ModelViewSet):
-    '''
-    rest view for Organization resource
-    '''
     max_page_size = 0
     queryset = Unit.objects.all()
     serializer_class = UnitSerializer
@@ -136,21 +123,43 @@ class UnitView(PaginationPageSizeMixin, viewsets.ModelViewSet):
 
 
 class CustomerView(PaginationPageSizeMixin, viewsets.ModelViewSet):
-    '''
-    rest view for Organization resource
-    '''
     max_page_size = 0
     queryset = Customer.objects.all()
     serializer_class = CustomerSerializer
     filter_fields = ('first_name', 'last_name', 'uid',)
     ordering_fields = '__all__'
     ordering = ('id',)
+    parser_classes = list(viewsets.ModelViewSet.parser_classes) + [FileUploadParser]
+
+    def __update_photo(self, request, **kwargs):
+        customer = self.get_object()
+        file_obj = request.data['file']
+        serializer = CustomerPhotoSerializer(instance=customer, data={'photo': file_obj})
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        photo_url = None
+        if customer.photo:
+            photo_url = customer.photo.url
+        return Response({'photo': photo_url})
+
+    def __delete_photo(self, request, **kwargs):
+        customer = self.get_object()
+        customer.photo = None
+        customer.save()
+        return Response({'photo': None})
+
+    @detail_route(methods=['delete', 'put'])
+    def photo(self, request, **kwargs):
+        if self.request.method == 'DELETE':
+            return self.__delete_photo(request, **kwargs)
+        elif self.request.method == 'PUT':
+            return self.__update_photo(request, **kwargs)
+
+        raise Exception('should not reach here!')
+
 
 
 class OrderView(PaginationPageSizeMixin, viewsets.ModelViewSet):
-    '''
-    rest view for Organization resource
-    '''
     max_page_size = 200
     queryset = Order.objects.all()
     serializer_class = OrderSerializer

@@ -22,6 +22,10 @@ def avatar_file_path_func(instance, filename):
     return get_random_upload_path(os.path.join('uploads', 'profile_avatar'), filename)
 
 
+def customer_photo_file_path_func(instance, filename):
+    return get_random_upload_path(os.path.join('uploads', 'customer_photo'), filename)
+
+
 class UserProfile(models.Model):
     GENDER_UNKNOWN = 'u'
     GENDER_MALE = 'm'
@@ -69,6 +73,7 @@ class Customer(models.Model):
     uid = models.CharField('Id Number', max_length=256, null=True, blank=True, unique=True)
     points = models.PositiveIntegerField('Points', default=0)
     unit = models.ForeignKey(Unit, null=True, related_name='customer', on_delete=models.SET_NULL)
+    photo = models.ImageField('Photo', blank=True, null=True, upload_to=customer_photo_file_path_func)
 
     def __str__(self):
         return '{} {}'.format(self.first_name, self.last_name)
