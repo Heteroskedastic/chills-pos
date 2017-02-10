@@ -487,17 +487,20 @@ app.controller("CustomerNewCtrl", function($scope, $rootScope, $state,$statePara
             var photo_el = angular.element('#customer_image')[0];
             if (photo_el.files.length > 0) {
                 $scope.updatePhoto(function () {
+                    $scope.saving = false;
                     $state.go('customer-list');
                     Utils.showDefaultServerSuccess(response);
+                }, function () {
+                    $scope.saving = false;
                 });
             } else {
+                $scope.saving = false;
                 $state.go('customer-list');
                 Utils.showDefaultServerSuccess(response);
             }
         }, function(response) {
-            Utils.showDefaultServerError(response);
-        }).finally(function() {
             $scope.saving = false;
+            Utils.showDefaultServerError(response);
         });
     };
 });
@@ -628,22 +631,28 @@ app.controller("CustomerEditCtrl", function($scope, $rootScope, $state,$statePar
             var photo_el = angular.element('#customer_image')[0];
             if (photo_el.files.length > 0) {
                 $scope.updatePhoto(function () {
+                    $scope.saving = false;
                     $state.go('customer-list');
                     Utils.showDefaultServerSuccess(response);
+                }, function () {
+                    $scope.saving = false;
                 });
             } else if($scope.deleting_photo) {
                 $scope.deletePhoto(function () {
+                    $scope.saving = false;
                     $scope.deleting_photo = false;
                     $state.go('customer-list');
                     Utils.showDefaultServerSuccess(response);
+                }, function () {
+                    $scope.saving = false;
                 });
             } else {
+                $scope.saving = false;
                 $state.go('customer-list');
                 Utils.showDefaultServerSuccess(response);
             }
         }, function(response) {
             Utils.showDefaultServerError(response);
-        }).finally(function() {
             $scope.saving = false;
         });
     };
