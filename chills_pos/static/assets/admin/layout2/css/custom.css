@@ -266,6 +266,7 @@ table .footer td {
     width: 128px;
     height: 128px;
     vertical-align: bottom;
+    margin-right: 5px;
 }
 
 .customer-card {
