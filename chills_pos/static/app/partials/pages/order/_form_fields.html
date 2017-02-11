@@ -1,11 +1,27 @@
             <div class="form-group">
+                <table>
+                    <tr>
+                        <td>
+                            <img class="img-avatar img-avatar128 img-avatar-thumb"
+                                 ng-src="{{ ($global.Customer.comboData|findById:selectedRecord.customer).photo|default:'/static/assets/global/img/avatar_blank.jpg' }}"
+                                 err-src="/static/assets/global/img/avatar_blank.jpg" alt="">
+                        </td>
+                        <td ng-show="selectedRecord.customer">
+                            <p class="order-customer-photo-title">{{ ($global.Customer.comboData|findById:selectedRecord.customer)|displayObject:'first_name,last_name'}}</p>
+                            <p class="order-customer-photo-unit"><strong>Unit:</strong> {{ (($global.Customer.comboData|findById:selectedRecord.customer)|displayObject:'_unit').name|default:'-' }}</p>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="form-group">
                 <label class="control-label">Customer(*)</label>
                 <ui-select autofocus ui-select-open-on-focus on-select="focusFirstProduct()" focus-on="OrderCustomerFocus" data-ng-model="selectedRecord.customer" theme="bootstrap">
                     <ui-select-match placeholder="Customer">
                         {{$select.selected.first_name}} {{$select.selected.last_name}} ({{$select.selected.uid || 'NO UID'}}) <em><small class="text-info">{{ $select.selected.points}} points</small></em>
                     </ui-select-match>
                     <ui-select-choices repeat="item.id as item in $global.Customer.comboData | filter: $select.search" value="{{$select.selected.id}}">
-                        <span ng-bind-html="item.first_name + ' ' + item.last_name + ' ('+ (item.uid || 'NO UID') + ')' + ' <em><small class=\'text-info\'>'+item.points+' points</small></em>' | highlight: $select.search"></span>
+                        <span ng-bind-html="item.first_name + ' ' + item.last_name + ' ('+ (item.uid || 'NO UID') + ')' + ' <em><small class=\'text-info\'>'+item.points+' points</small></em>'"></span>
                     </ui-select-choices>
                 </ui-select>
             </div>

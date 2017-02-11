@@ -305,6 +305,16 @@ table .footer td {
 .page-break-after {
     page-break-after: always;
 }
+
+.order-customer-photo-title {
+    font-size: 20px;
+}
+
+.order-customer-photo-unit {
+    font-size: 15px;
+
+}
+
 @media print {
     .print-hidden {
         display: none;

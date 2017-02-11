@@ -43,7 +43,7 @@ app.controller("MainCtrl", function($scope, $rootScope, $http, $window, Utils, S
 
     $rootScope.loadCustomerCombo = function() {
         if (!$rootScope.$global.Customer.comboData) {
-            CustomerService.query({page_size: 0, ordering: 'first_name,last_name', fields: 'id,first_name,last_name,uid,points'}, function(response) {
+            CustomerService.query({page_size: 0, ordering: 'first_name,last_name', fields: 'id,first_name,last_name,uid,_unit,photo,points'}, function(response) {
                 $rootScope.$global.Customer.comboData = response.results;
             });
         }

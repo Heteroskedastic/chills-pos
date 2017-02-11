@@ -21,6 +21,22 @@ app.filter('findById', function () {
     };
 });
 
+app.filter('displayObject', function () {
+    return function (input, fields) {
+        if(input) {
+            var s = [];
+            fields = fields.split(',');
+            fields.forEach(function (f) {
+                s.push(input[f]);
+            });
+            if(s.length == 1) {
+                return s[0]
+            }
+            return s.join(' ');
+        }
+    };
+});
+
 app.filter('orderObjectBy', function() {
     return function(items, field, reverse) {
         var filtered = [];
