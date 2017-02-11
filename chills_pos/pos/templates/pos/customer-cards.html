@@ -18,21 +18,26 @@
         <h1 class="text-center customer-card-unit-title"> Unit: {{ unit|default:'N/A' }}</h1>
         <div class="row customer-card-unit-section">
         {% for customer in customers %}
-        <div class="customer-card-container col-md-6 col-sm-6 col-xs-6">
-            <div class="customer-card">
-                <img class="img-customer-card-photo" src="{% if customer.photo %}{{ customer.photo.url }}{% else %}{{ STATIC_URL }}assets/global/img/avatar_blank.jpg{% endif %}">
-                <div class="text-customer-card-photo">
-                    <p><strong>{{ customer }}</strong></p>
-                    <p>Student ID: <strong>{{ customer.uid|default:'N/A' }}</strong></p>
-                    <p>Unit: <strong>{{ customer.unit|default:'-' }}</strong></p>
-                    {% if customer.uid %}
-                    <div class="img-customer-card-qr qr-place-holder" data-uid="{{customer.uid}}"></div>
-                    {% else %}
-                    <img class="img-customer-card-qr" src="{{ STATIC_URL }}assets/global/img/no_qr.jpg">
-                    {% endif %}
-                </div>
-
-            </div>
+        <div class="customer-card col-md-6 col-sm-6 col-xs-6">
+            <table>
+                <tr class="">
+                    <td>
+                        <img class="img-customer-card-photo" src="{% if customer.photo %}{{ customer.photo.url }}{% else %}{{ STATIC_URL }}assets/global/img/avatar_blank.jpg{% endif %}">
+                    </td>
+                    <td>
+                        <div class="text-customer-card-photo">
+                            <p><strong>{{ customer }}</strong></p>
+                            <p>Student ID: <strong>{{ customer.uid|default:'N/A' }}</strong></p>
+                            <p>Unit: <strong>{{ customer.unit|default:'-' }}</strong></p>
+                            {% if customer.uid %}
+                            <div class="img-customer-card-qr qr-place-holder" data-uid="{{customer.uid}}"></div>
+                            {% else %}
+                            <img class="img-customer-card-qr" src="{{ STATIC_URL }}assets/global/img/no_qr.jpg">
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+            </table>
         </div>
         {% endfor %}
         </div>
