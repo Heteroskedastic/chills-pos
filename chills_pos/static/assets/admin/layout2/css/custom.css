@@ -269,7 +269,7 @@ table .footer td {
 }
 
 .customer-card-container {
-    page-break-inside: avoid;
+
 }
 
 .customer-card {
@@ -297,12 +297,16 @@ table .footer td {
 }
 
 .customer-card-unit-title {
-    page-break-before: always;
+
 }
 
 .customer-card-unit-section {
     margin-left: 0px;
     margin-right: 0px;
+}
+
+.page-break-after {
+    page-break-after: always;
 }
 @media print {
     .print-hidden {
