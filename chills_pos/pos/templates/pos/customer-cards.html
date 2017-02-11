@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+        <title>Customer Cards</title>
+
+        <link href="{{ STATIC_URL }}assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+        <link href="{{ STATIC_URL }}assets/admin/layout2/css/custom.css" rel="stylesheet" type="text/css"/>
+    </head>
+
+    <body>
+        <button id="print-btn" class="btn btn-danger glyphicon glyphicon-print pull-right print-hidden" title="Print" onclick="window.print();"></button>
+        {% for unit, customers in unit_customers.items %}
+        <h1 class="text-center customer-card-unit-title"> Unit: {{ unit|default:'N/A' }}</h1>
+        <div class="row customer-card-unit-section">
+        {% for customer in customers %}
+        <div class="customer-card-container col-md-6 col-sm-6 col-xs-6">
+            <div class="customer-card">
+                <img class="img-customer-card-photo" src="{% if customer.photo %}{{ customer.photo.url }}{% else %}{{ STATIC_URL }}assets/global/img/avatar_blank.jpg{% endif %}">
+                <div class="text-customer-card-photo">
+                    <p>{{ customer }}</p>
+                    <p><strong>Student ID:</strong> {{ customer.uid }}</p>
+                    <p><strong>Unit:</strong> {{ customer.unit|default:'-' }}</p>
+                    {% if customer.uid %}
+                    <div class="img-customer-card-qr qr-place-holder" data-uid="{{customer.uid}}"></div>
+                    {% else %}
+                    <img class="img-customer-card-qr" src="{{ STATIC_URL }}assets/global/img/no_qr.jpg">
+                    {% endif %}
+                </div>
+
+            </div>
+        </div>
+        {% endfor %}
+        </div>
+
+        {% endfor %}
+
+        <script src="{{ STATIC_URL }}assets/global/plugins/jquery.min.js"></script>
+        <script src="{{ STATIC_URL }}assets/global/plugins/bootstrap/js/bootstrap.min.js"></script>
+        <script src="{{ STATIC_URL }}assets/global/plugins/qrcode.js"></script>
+
+        <script>
+            var typeNumber = 2;
+            var errorCorrectionLevel = 'H';
+            $('.qr-place-holder').each(function (i, el) {
+                var qr = qrcode(typeNumber, errorCorrectionLevel);
+                qr.addData($(el).attr('data-uid'));
+                qr.make();
+                el.innerHTML = qr.createImgTag(2, 5);
+            })
+{#            $('.qr-place-holder')[0].innerHTML = qr.createImgTag(4);#}
+
+            {% if request.GET.print %}
+            window.print();
+            {% endif %}
+        </script>
+
+    </body>
+</html>

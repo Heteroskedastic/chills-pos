@@ -261,3 +261,51 @@ table .footer td {
   background-color: #fff;
   border-radius: 2px;
 }
+
+.img-customer-card-photo {
+    width: 128px;
+    height: 128px;
+    vertical-align: bottom;
+}
+
+.customer-card-container {
+    page-break-inside: avoid;
+}
+
+.customer-card {
+    border-style: groove;
+    border-width: 1px;
+    padding: 10px;
+    margin-top: 3px;
+}
+.img-customer-card-qr {
+    width: 60px;
+    height: 60px;
+    margin-left: 2px;
+    /*border-style: groove;*/
+    /*border-width: 1px;*/
+    /*float: right !important;*/
+}
+
+.text-customer-card-photo {
+    display: inline-block;
+    vertical-align: top;
+    font-size: 15px;
+}
+.text-customer-card-photo p {
+    margin-bottom: 0px;
+}
+
+.customer-card-unit-title {
+    page-break-before: always;
+}
+
+.customer-card-unit-section {
+    margin-left: 0px;
+    margin-right: 0px;
+}
+@media print {
+    .print-hidden {
+        display: none;
+    }
+}

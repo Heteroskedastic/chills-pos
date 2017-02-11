@@ -1,24 +1,32 @@
-            <div class="form-group">
-                <div class="push-30-t push animated fadeInDown">
-                    <img class="img-avatar img-avatar128 img-avatar-thumb"
-                         ng-src="{{ selectedRecord.photo|default:'/static/assets/global/img/avatar_blank.jpg' }}"
-                         err-src="/static/assets/global/img/avatar_blank.jpg" alt="">
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <div class="">
+                        <img class="img-avatar img-avatar128 img-avatar-thumb"
+                             ng-src="{{ selectedRecord.photo|default:'/static/assets/global/img/avatar_blank.jpg' }}"
+                             err-src="/static/assets/global/img/avatar_blank.jpg" alt="">
+                    </div>
+                    <div class="">
+                        <button ng-show="selectedRecord.photo" class="btn btn-sm btn-danger" type="button"
+                                ng-click="deleteCurrentPhoto()">
+                                    <span><i class="fa fa-trash push-5-r"></i> Delete Photo</span>
+                        </button>
+                        <label class="btn btn-primary btn-sm"><span class="fa fa-file-photo-o"></span>
+                            Choose Photo <input type="file" id="customer_image" name="customer_image"
+                                                 accept="image/jpeg, image/png" style="display: none;"
+                                                 onchange="angular.element(this).scope().setCustomerFile(this)">
+                        </label>
+                        <span ng-show="customer_chosen_file">{{ customer_chosen_file.name }}
+                                    <button type="button" class="btn btn-link" ng-click="clearChosenPhoto()"
+                                            title="Clear chosen image"><span class="fa fa-close"></span></button>
+                                </span>
+                        <span ng-show="!customer_chosen_file" class="text-muted">No Photo Chosen</span>
+                    </div>
                 </div>
-                <div class="">
-                    <button ng-show="selectedRecord.photo" class="btn btn-sm btn-danger" type="button"
-                            ng-click="deleteCurrentPhoto()">
-                                <span><i class="fa fa-trash push-5-r"></i> Delete Photo</span>
-                    </button>
-                    <label class="btn btn-primary btn-sm"><span class="fa fa-file-photo-o"></span>
-                        Choose Photo <input type="file" id="customer_image" name="customer_image"
-                                             accept="image/jpeg, image/png" style="display: none;"
-                                             onchange="angular.element(this).scope().setCustomerFile(this)">
-                    </label>
-                    <span ng-show="customer_chosen_file">{{ customer_chosen_file.name }}
-                                <button type="button" class="btn btn-link" ng-click="clearChosenPhoto()"
-                                        title="Clear chosen image"><span class="fa fa-close"></span></button>
-                            </span>
-                    <span ng-show="!customer_chosen_file" class="text-muted">No Photo Chosen</span>
+                <div class="form-group col-md-6">
+                    <div class="pull-right">
+                        <img ng-hide="selectedRecord.uid" class="img-avatar img-avatar128" src="/static/assets/global/img/no_qr.jpg">
+                        <qrcode ng-show="selectedRecord.uid" version="2" error-correction-level="H" size="128" data="{{ selectedRecord.uid }}"></qrcode>
+                    </div>
                 </div>
             </div>
             <div class="form-group">

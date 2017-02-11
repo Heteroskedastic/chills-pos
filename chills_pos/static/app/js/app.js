@@ -1,4 +1,4 @@
-var app = angular.module("chillsPos", ['ui.router', 'ngResource', 'ngAnimate', 'ui.bootstrap', 'ui.grid', 'ui.grid.pagination', 'ui.select', 'ngSanitize']);
+var app = angular.module("chillsPos", ['ui.router', 'ngResource', 'ngAnimate', 'ui.bootstrap', 'ui.grid', 'ui.grid.pagination', 'ui.select', 'ngSanitize', 'oc.lazyLoad']);
 
 app.config(function($stateProvider, $urlRouterProvider) {
     $urlRouterProvider.otherwise("/dashboard");
@@ -107,7 +107,17 @@ app.config(function($stateProvider, $urlRouterProvider) {
                 back: 'customer-list'
             }
         },
-        controller  : 'CustomerNewCtrl'
+        controller: 'CustomerNewCtrl',
+        resolve: {
+            lazyLoad: ['$ocLazyLoad', function ($ocLazyLoad) {
+                return $ocLazyLoad.load({
+                    files: [
+                        '/static/assets/global/plugins/qrcode.js',
+                        '/static/assets/global/plugins/angular-qrcode.js'
+                    ]
+                });
+            }]
+        }
     }).state('customer-edit', {
         url: "/customer/:id/edit",
         templateUrl : 'app/partials/pages/customer/edit.html',
@@ -118,7 +128,17 @@ app.config(function($stateProvider, $urlRouterProvider) {
                 back: 'customer-list'
             }
         },
-        controller  : 'CustomerEditCtrl'
+        controller  : 'CustomerEditCtrl',
+        resolve: {
+            lazyLoad: ['$ocLazyLoad', function ($ocLazyLoad) {
+                return $ocLazyLoad.load({
+                    files: [
+                        'assets/global/plugins/qrcode.js',
+                        'assets/global/plugins/angular-qrcode.js'
+                    ]
+                });
+            }]
+        }
     }).state('order-list', {
         url: "/order/list",
         templateUrl : 'app/partials/pages/order/list.html',

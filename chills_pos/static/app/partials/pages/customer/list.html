@@ -3,6 +3,7 @@
 <ng-include src="'app/partials/pagebar.html'"></ng-include>
 <div class="pull-right">
     <button class="btn btn-primary" title="Refresh Table" ng-click="refreshData()"><i class="fa fa-refresh"></i></button>
+    <a class="btn btn-warning" href="/customer-cards/?print=true" target="_blank"><i class="fa fa-print"></i> Print as Cards</a>
     <a href="{{ $state.href('customer-new') }}" class="btn btn-success"><i class="fa fa-plus"></i> New</a>
 </div>
 <h3 class="page-title">

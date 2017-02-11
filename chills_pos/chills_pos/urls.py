@@ -25,7 +25,7 @@ from django.views.static import serve
 from pos.rest_api.views import SessionView, ProductView, CustomerView, OrderView, ProfileView, UnitView
 
 # register all rest views here
-from pos.views import IndexView, LoginView
+from pos.views import IndexView, LoginView, CustomerCardsView
 
 rest_router = routers.DefaultRouter()
 rest_router.trailing_slash = "/?"  # added to support both / and slashless
@@ -49,6 +49,7 @@ urlpatterns = [
     url(r'^token/verify/', verify_jwt_token),
     url(r'^$', IndexView.as_view(), name='index'),
     url(r'^login/$', LoginView.as_view(), name="login"),
+    url(r'^customer-cards/$', CustomerCardsView.as_view(), name="customer-cards"),
 ]
 
 if settings.DEBUG:
