@@ -6,9 +6,24 @@
                 <label class="control-label">Description</label>
                 <textarea type="text" placeholder="Description" class="form-control" data-ng-model="selectedRecord.description"></textarea>
             </div>
-            <div class="form-group">
+            <div class="form-group" ng-show="updateMode">
+                <div class="col-md-12 pad-left0">
+                    <label class="control-label">Quantity</label>
+                </div>
+                <div class="col-md-6 pad-left0">
+                    <input type="number" pattern="\d*" placeholder="Quantity" class="form-control" data-ng-model="selectedRecord.quantity" data-ng-disabled="enable_increase_quantity" required/>
+                </div>
+                <div class="col-md-6 pad-left0">
+                    <div class="input-group">
+                        <span class="input-group-addon"><input type="checkbox" data-ng-model="enable_increase_quantity"  data-ng-change="selectedRecord._iquantity=undefined; selectedRecord.quantity=selectedRecord._orig_quantity"> Or Increase For</span>
+                        <input type="number" pattern="\d*" placeholder="Increase Amount" class="form-control" data-ng-model="selectedRecord._iquantity" data-ng-disabled="!enable_increase_quantity" required />
+                        <span data-ng-show="enable_increase_quantity" class="input-group-addon">+ {{ selectedRecord._orig_quantity}} = <strong>{{ selectedRecord._orig_quantity + selectedRecord._iquantity}}</strong></span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group" ng-hide="updateMode">
                 <label class="control-label">Quantity</label>
-                <input type="number" pattern="\d*" placeholder="Quantity" class="form-control" data-ng-model="selectedRecord.quantity" required/>
+                <input type="number" pattern="\d*" placeholder="Quantity" class="form-control" data-ng-model="selectedRecord.quantity" required />
             </div>
             <div class="form-group">
                 <label class="control-label">UPC</label>

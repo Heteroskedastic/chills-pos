@@ -289,6 +289,7 @@ app.controller("ProductNewCtrl", function($scope, $rootScope, $state,$stateParam
 });
 
 app.controller("ProductEditCtrl", function($scope, $rootScope, $state,$stateParams, ProductService, Utils, $uibModal) {
+    $scope.updateMode = true;
     var $global = $rootScope.$global.Product;
 
     $scope.showDeleteConfirm = function() {
@@ -335,6 +336,9 @@ app.controller("ProductEditCtrl", function($scope, $rootScope, $state,$statePara
             return;
         }
         $scope.saving = true;
+        if ($scope.selectedRecord._iquantity) {
+            $scope.selectedRecord.quantity = $scope.selectedRecord._orig_quantity + $scope.selectedRecord._iquantity;
+        }
         $scope.selectedRecord.$update().then(function(response) {
             var data = $global.gridOptions? $global.gridOptions.data: [];
             var idx = Utils.findByProperty(data, 'id', response.id);
@@ -346,6 +350,7 @@ app.controller("ProductEditCtrl", function($scope, $rootScope, $state,$statePara
             Utils.showDefaultServerSuccess(response);
         }, function(response) {
             Utils.showDefaultServerError(response);
+            $scope.selectedRecord.quantity = $scope.selectedRecord._orig_quantity;
         }).finally(function() {
             $scope.saving = false;
         });
@@ -353,6 +358,7 @@ app.controller("ProductEditCtrl", function($scope, $rootScope, $state,$statePara
     $scope.loadRecord=function() {
         ProductService.get({id: $stateParams.id}, function(record) {
             $scope.selectedRecord = record;
+            $scope.selectedRecord._orig_quantity = record.quantity;
         }, function(response) {
             Utils.showDefaultServerError(response);
             $state.go('product-list');

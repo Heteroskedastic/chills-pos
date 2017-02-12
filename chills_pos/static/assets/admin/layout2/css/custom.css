@@ -19,6 +19,7 @@ Rounded Portlets
 */
 
 /* ---- margin --- */
+.mar-left0 { margin-left: 0px !important; }
 .mar-left5 { margin-left: 5px !important; }
 .mar-left10 { margin-left: 10px !important; }
 .mar-left15 { margin-left: 15px !important; }
@@ -26,6 +27,7 @@ Rounded Portlets
 .mar-left25 { margin-left: 25px !important; }
 .mar-left30 { margin-left: 30px !important; }
 
+.mar-right0 { margin-right: 0px !important; }
 .mar-right5 { margin-right: 5px !important; }
 .mar-right10 { margin-right: 10px !important; }
 .mar-right15 { margin-right: 15px !important; }
@@ -61,6 +63,7 @@ Rounded Portlets
 .mar-bot40 { margin-bottom: 40px !important; }
 
 /* ---- padding --- */
+.pad-left0 { padding-left: 0px !important; }
 .pad-left5 { padding-left: 5px !important; }
 .pad-left10 { padding-left: 10px !important; }
 .pad-left15 { padding-left: 15px !important; }
@@ -68,6 +71,7 @@ Rounded Portlets
 .pad-left25 { padding-left: 25px !important; }
 .pad-left30 { padding-left: 30px !important; }
 
+.pad-right0 { padding-right: 0px !important; }
 .pad-right5 { padding-right: 5px !important; }
 .pad-right10 { padding-right: 10px !important; }
 .pad-right15 { padding-right: 15px !important; }
