@@ -11,19 +11,19 @@
                     <label class="control-label">Quantity</label>
                 </div>
                 <div class="col-md-6 pad-left0">
-                    <input type="number" pattern="\d*" placeholder="Quantity" class="form-control" data-ng-model="selectedRecord.quantity" data-ng-disabled="enable_increase_quantity" required/>
+                    <input type="number" min="0" pattern="\d*" placeholder="Quantity" class="form-control" data-ng-model="selectedRecord.quantity" data-ng-disabled="enable_increase_quantity" required/>
                 </div>
                 <div class="col-md-6 pad-left0">
                     <div class="input-group">
                         <span class="input-group-addon"><input type="checkbox" data-ng-model="enable_increase_quantity"  data-ng-change="selectedRecord._iquantity=undefined; selectedRecord.quantity=selectedRecord._orig_quantity"> Or Increase For</span>
-                        <input type="number" pattern="\d*" placeholder="Increase Amount" class="form-control" data-ng-model="selectedRecord._iquantity" data-ng-disabled="!enable_increase_quantity" required />
+                        <input type="number" min="0" pattern="\d*" placeholder="Increase Amount" class="form-control" data-ng-model="selectedRecord._iquantity" data-ng-disabled="!enable_increase_quantity" required />
                         <span data-ng-show="enable_increase_quantity" class="input-group-addon">+ {{ selectedRecord._orig_quantity}} = <strong>{{ selectedRecord._orig_quantity + selectedRecord._iquantity}}</strong></span>
                     </div>
                 </div>
             </div>
             <div class="form-group" ng-hide="updateMode">
                 <label class="control-label">Quantity</label>
-                <input type="number" pattern="\d*" placeholder="Quantity" class="form-control" data-ng-model="selectedRecord.quantity" required />
+                <input type="number" min="0" pattern="\d*" placeholder="Quantity" class="form-control" data-ng-model="selectedRecord.quantity" required />
             </div>
             <div class="form-group">
                 <label class="control-label">UPC</label>
@@ -35,15 +35,15 @@
             </div>
             <div class="form-group">
                 <label class="control-label">Re-order Limit</label>
-                <input type="number" placeholder="Re-order Limit" class="form-control" data-ng-model="selectedRecord.reorder_limit" required/>
+                <input type="number" min="0" placeholder="Re-order Limit" class="form-control" data-ng-model="selectedRecord.reorder_limit" required/>
             </div>
             <div class="form-group">
                 <label class="control-label">Retail Price</label>
-                <input type="number" placeholder="Retail Price" step="any" class="form-control" data-ng-model="selectedRecord.price" required/>
+                <input type="number" min="0" placeholder="Retail Price" step="any" class="form-control" data-ng-model="selectedRecord.price" required/>
             </div>
             <div class="form-group">
                 <label class="control-label">Purchase Price</label>
-                <input type="number" placeholder="Purchase Price" step="any" class="form-control" data-ng-model="selectedRecord.purchase_price" required/>
+                <input type="number" min="0" placeholder="Purchase Price" step="any" class="form-control" data-ng-model="selectedRecord.purchase_price" required/>
             </div>
             <div class="form-group">
                 <label class="control-label">Enabled?</label>
