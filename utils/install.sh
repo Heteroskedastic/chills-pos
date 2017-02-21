@@ -69,7 +69,7 @@ python manage.py migrate --settings=$DJANGO_SETTINGS_MODULE --noinput
 python manage.py collectstatic --settings=$DJANGO_SETTINGS_MODULE --noinput
 sudo service supervisor restart
 sudo supervisorctl restart $NAME
-sudo supervisorctl restart $NAME-celery
+#sudo supervisorctl restart $NAME-celery
 sudo service nginx restart
 
 echo

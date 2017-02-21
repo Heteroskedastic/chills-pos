@@ -14,4 +14,4 @@ DATABASES = {
         'PASSWORD': 'a'
     }
 }
-HOSTNAME = '10.0.88.17'
+HOSTNAME = 'store.cinnamonhills.org'

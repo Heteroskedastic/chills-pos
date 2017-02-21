@@ -27,7 +27,7 @@ else
     git clone $GITURL -b $BRANCH $DJANGODIR
 fi
 sudo supervisorctl stop $NAME
-sudo supervisorctl stop $NAME-celery
+#sudo supervisorctl stop $NAME-celery
 sleep 1
 if [ ! -d "$ENVDIR" ]; then
     virtualenv -p python3 $ENVDIR
@@ -40,7 +40,7 @@ cd $DJANGODIR/chills_pos
 python manage.py migrate --settings=$DJANGO_SETTINGS_MODULE --noinput
 python manage.py collectstatic --settings=$DJANGO_SETTINGS_MODULE --noinput
 sudo supervisorctl start $NAME
-sudo supervisorctl start $NAME-celery
+#sudo supervisorctl start $NAME-celery
 sudo service nginx restart
 
 echo
