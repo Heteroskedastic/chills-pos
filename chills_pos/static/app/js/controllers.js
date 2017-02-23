@@ -1013,37 +1013,35 @@ app.controller("SalesReportCtrl", function($scope, $rootScope, $state, $statePar
     $rootScope.loadCustomerCombo();
     $rootScope.loadUnitCombo();
 
-    var initialized = true,
+    var initialized = false,
         $global = $rootScope.$global.SalesReport;
-    if (!$global.gridOptions) {
-        initialized = false;
-        $scope.filteringOptions = {};
-        $global.gridOptions = {
-            paginationPageSizes: [10, 20, 30, 50, 100, 200],
-            paginationPageSize: 10,
-            useExternalPagination: true,
-            useExternalSorting: false,
-            enableSorting: false,
-            enableColumnMenus: false,
-            rowHeight: 35,
-            columnDefs: [
-                {name: 'order_id', 'displayName': 'Order#', width: 60},
-                {name: 'clerk', 'displayName': 'Clerk'},
-                {name: 'customer_name', 'displayName': 'Customer'},
-                {name: 'customer_unit', 'displayName': 'Unit'},
-                {name: 'product_name', 'displayName': 'Product'},
-                {name: 'product_upc', 'displayName': 'UPC'},
-                {name: 'product_part_number', 'displayName': 'Part#'},
-                {name: 'quantity', 'displayName': 'Quantity', width: 70},
-                {name: 'item_price', 'displayName': 'Sale Price',
-                    cellTemplate: '<div class="ui-grid-cell-contents ng-binding ng-scope"><strong>${{row.entity.quantity * row.entity.item_price}}</strong> = {{row.entity.quantity}} * <strong>{{row.entity.item_price}}</strong></div>'
-                },
-                {name: 'create_datetime', 'displayName': 'Created At', cellFilter: 'date: "MMM dd yyyy hh:mm a"', width: 150},
+    $scope.filteringOptions = {};
+    $global.gridOptions = {
+        paginationPageSizes: [10, 20, 30, 50, 100, 200],
+        paginationPageSize: 10,
+        useExternalPagination: true,
+        useExternalSorting: false,
+        enableSorting: false,
+        enableColumnMenus: false,
+        rowHeight: 35,
+        columnDefs: [
+            {name: 'order_id', 'displayName': 'Order#', width: 60},
+            {name: 'clerk', 'displayName': 'Clerk'},
+            {name: 'customer_name', 'displayName': 'Customer'},
+            {name: 'customer_unit', 'displayName': 'Unit'},
+            {name: 'product_name', 'displayName': 'Product'},
+            {name: 'product_upc', 'displayName': 'UPC'},
+            {name: 'product_part_number', 'displayName': 'Part#'},
+            {name: 'quantity', 'displayName': 'Quantity', width: 70},
+            {name: 'item_price', 'displayName': 'Sale Price',
+                cellTemplate: '<div class="ui-grid-cell-contents ng-binding ng-scope"><strong>${{row.entity.quantity * row.entity.item_price}}</strong> = {{row.entity.quantity}} * <strong>{{row.entity.item_price}}</strong></div>'
+            },
+            {name: 'create_datetime', 'displayName': 'Created At', cellFilter: 'date: "MMM dd yyyy hh:mm a"', width: 150},
 
-            ]
-            // onRegisterApi: GeneralUiGrid.onRegisterApi($scope)
-        };
-    }
+        ]
+        // onRegisterApi: GeneralUiGrid.onRegisterApi($scope)
+    };
+
     $global.gridOptions.onRegisterApi = GeneralUiGrid.onRegisterApi($scope);
     $scope.getPage = GeneralUiGrid.getPage($scope, SalesReportService, $global.gridOptions);
     if (!initialized) {

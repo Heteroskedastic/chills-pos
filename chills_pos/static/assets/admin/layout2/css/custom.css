@@ -319,6 +319,18 @@ table .footer td {
 
 }
 
+.watermark {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0.15;
+    width: 100%;
+    text-align: center;
+    z-index: 1000;
+    font-size: 4em;
+    font-style: italic;
+}
+
 @media print {
     .print-hidden {
         display: none;
