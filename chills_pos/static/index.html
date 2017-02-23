@@ -192,6 +192,20 @@ body {
                     <span class="selected"></span>
                     </a>
                 </li>
+                <li class="start" data-ng-class="menuActiveIf('report-sales')">
+                    <a href="javascript:">
+                        <i class="fa fa-bar-chart"></i>
+                        <span class="title">Reports</span>
+                        <span class="arrow"></span>
+                    </a>
+                    <ul class="sub-menu">
+                        <li data-ng-class="menuActiveIf('report-sales')">
+                            <a href="{{ $state.href('report-sales') }}">
+                                <i class="fa fa-table"></i> {{ $state.get('report-sales').data.pageInfo.title }}
+                            </a>
+                        </li>
+                    </ul>
+                </li>
             </ul>
             <!-- END SIDEBAR MENU -->
         </div>

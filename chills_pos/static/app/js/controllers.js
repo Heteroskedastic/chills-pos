@@ -13,6 +13,7 @@ app.controller("MainCtrl", function($scope, $rootScope, $http, $window, Utils, S
     $rootScope.$global.Customer = {};
     $rootScope.$global.Product = {};
     $rootScope.$global.Order = {};
+    $rootScope.$global.SalesReport = {};
 
     $scope.$on('$viewContentLoaded', function() {
         if ($rootScope.pageLoaded) {
@@ -210,7 +211,6 @@ app.controller("MyProfileCtrl", function($scope, $rootScope, $http, Utils, Profi
 app.controller("ProductListCtrl", function($scope, $rootScope, $state, $stateParams, ProductService, Utils, GeneralUiGrid) {
     $scope.loadingGrid = false;
     $scope.sortingOptions = null;
-    $scope.filteringOptions = [];
     $scope.paginationOptions = {
         page: 1
     };
@@ -222,6 +222,7 @@ app.controller("ProductListCtrl", function($scope, $rootScope, $state, $statePar
         $global = $rootScope.$global.Product;
     if (!$global.gridOptions) {
         initialized = false;
+        $scope.filteringOptions = {};
         $global.gridOptions = {
             paginationPageSizes: [10, 20, 30, 50, 100, 200],
             paginationPageSize: 10,
@@ -258,13 +259,6 @@ app.controller("ProductListCtrl", function($scope, $rootScope, $state, $statePar
 
     $scope.refreshData = function () {
         $scope.getPage();
-    };
-
-    $scope.getDisplayType = function(type) {
-        var choice = $global.typeChoices.filter(function(v) {
-            return v.value==type
-        })[0];
-        return choice? choice.display_name: type;
     };
 });
 
@@ -374,7 +368,6 @@ app.controller("ProductEditCtrl", function($scope, $rootScope, $state,$statePara
 app.controller("CustomerListCtrl", function($scope, $rootScope, $state, $stateParams, CustomerService, Utils, GeneralUiGrid) {
     $scope.loadingGrid = false;
     $scope.sortingOptions = null;
-    $scope.filteringOptions = [];
     $scope.paginationOptions = {
         page: 1
     };
@@ -386,6 +379,7 @@ app.controller("CustomerListCtrl", function($scope, $rootScope, $state, $statePa
         $global = $rootScope.$global.Customer;
     if (!$global.gridOptions) {
         initialized = false;
+        $scope.filteringOptions = {};
         $global.gridOptions = {
             paginationPageSizes: [10, 20, 30, 50, 100, 200],
             paginationPageSize: 10,
@@ -419,13 +413,6 @@ app.controller("CustomerListCtrl", function($scope, $rootScope, $state, $statePa
 
     $scope.refreshData = function () {
         $scope.getPage();
-    };
-
-    $scope.getDisplayType = function(type) {
-        var choice = $global.typeChoices.filter(function(v) {
-            return v.value==type
-        })[0];
-        return choice? choice.display_name: type;
     };
 });
 
@@ -680,7 +667,6 @@ app.controller("CustomerEditCtrl", function($scope, $rootScope, $state,$statePar
 app.controller("UnitListCtrl", function($scope, $rootScope, $state, $stateParams, UnitService, Utils, GeneralUiGrid) {
     $scope.loadingGrid = false;
     $scope.sortingOptions = null;
-    $scope.filteringOptions = [];
     $scope.paginationOptions = {
         page: 1
     };
@@ -692,6 +678,7 @@ app.controller("UnitListCtrl", function($scope, $rootScope, $state, $stateParams
         $global = $rootScope.$global.Unit;
     if (!$global.gridOptions) {
         initialized = false;
+        $scope.filteringOptions = {};
         $global.gridOptions = {
             paginationPageSizes: [10, 20, 30, 50, 100, 200],
             paginationPageSize: 10,
@@ -718,13 +705,6 @@ app.controller("UnitListCtrl", function($scope, $rootScope, $state, $stateParams
 
     $scope.refreshData = function () {
         $scope.getPage();
-    };
-
-    $scope.getDisplayType = function(type) {
-        var choice = $global.typeChoices.filter(function(v) {
-            return v.value==type
-        })[0];
-        return choice? choice.display_name: type;
     };
 });
 
@@ -828,7 +808,6 @@ app.controller("UnitEditCtrl", function($scope, $rootScope, $state,$stateParams,
 app.controller("OrderListCtrl", function($scope, $rootScope, $state, $stateParams, OrderService, Utils, GeneralUiGrid) {
     $scope.loadingGrid = false;
     $scope.sortingOptions = null;
-    $scope.filteringOptions = [];
     $scope.paginationOptions = {
         page: 1
     };
@@ -840,6 +819,7 @@ app.controller("OrderListCtrl", function($scope, $rootScope, $state, $stateParam
         $global = $rootScope.$global.Order;
     if (!$global.gridOptions) {
         initialized = false;
+        $scope.filteringOptions = {};
         $global.gridOptions = {
             paginationPageSizes: [10, 20, 30, 50, 100, 200],
             paginationPageSize: 10,
@@ -871,13 +851,6 @@ app.controller("OrderListCtrl", function($scope, $rootScope, $state, $stateParam
 
     $scope.refreshData = function () {
         $scope.getPage();
-    };
-
-    $scope.getDisplayType = function(type) {
-        var choice = $global.typeChoices.filter(function(v) {
-            return v.value==type
-        })[0];
-        return choice? choice.display_name: type;
     };
 });
 
@@ -1021,4 +994,91 @@ app.controller("OrderEditCtrl", function($scope, $rootScope, $state,$stateParams
         });
     };
     $scope.loadRecord();
+});
+
+/******************************************************************
+********************* SalesReport controllers *****************
+*******************************************************************/
+
+app.controller("SalesReportCtrl", function($scope, $rootScope, $state, $stateParams, $httpParamSerializer, SalesReportService, Utils, GeneralUiGrid) {
+    $scope.loadingGrid = false;
+    $scope.sortingOptions = null;
+    $scope.paginationOptions = {
+        page: 1
+    };
+    if (!$rootScope.$global.SalesReport) {
+        $rootScope.$global.SalesReport = {}
+    }
+    $rootScope.loadProductCombo();
+    $rootScope.loadCustomerCombo();
+    $rootScope.loadUnitCombo();
+
+    var initialized = true,
+        $global = $rootScope.$global.SalesReport;
+    if (!$global.gridOptions) {
+        initialized = false;
+        $scope.filteringOptions = {};
+        $global.gridOptions = {
+            paginationPageSizes: [10, 20, 30, 50, 100, 200],
+            paginationPageSize: 10,
+            useExternalPagination: true,
+            useExternalSorting: false,
+            enableSorting: false,
+            enableColumnMenus: false,
+            rowHeight: 35,
+            columnDefs: [
+                {name: 'order_id', 'displayName': 'Order#', width: 60},
+                {name: 'clerk', 'displayName': 'Clerk'},
+                {name: 'customer_name', 'displayName': 'Customer'},
+                {name: 'customer_unit', 'displayName': 'Unit'},
+                {name: 'product_name', 'displayName': 'Product'},
+                {name: 'product_upc', 'displayName': 'UPC'},
+                {name: 'product_part_number', 'displayName': 'Part#'},
+                {name: 'quantity', 'displayName': 'Quantity', width: 70},
+                {name: 'item_price', 'displayName': 'Sale Price',
+                    cellTemplate: '<div class="ui-grid-cell-contents ng-binding ng-scope"><strong>${{row.entity.quantity * row.entity.item_price}}</strong> = {{row.entity.quantity}} * <strong>{{row.entity.item_price}}</strong></div>'
+                },
+                {name: 'create_datetime', 'displayName': 'Created At', cellFilter: 'date: "MMM dd yyyy hh:mm a"', width: 150},
+
+            ]
+            // onRegisterApi: GeneralUiGrid.onRegisterApi($scope)
+        };
+    }
+    $global.gridOptions.onRegisterApi = GeneralUiGrid.onRegisterApi($scope);
+    $scope.getPage = GeneralUiGrid.getPage($scope, SalesReportService, $global.gridOptions);
+    if (!initialized) {
+        $scope.getPage();
+    }
+
+    $scope.getSerializedFiltering = function () {
+        if (!$scope.filteringOptions) {
+            return {};
+        }
+        var data = angular.copy($scope.filteringOptions);
+        if (data.min_create_date) {
+            data.min_create_date = moment(data.min_create_date).format('YYYY-MM-DD');
+        }
+        if (data.max_create_date) {
+            data.max_create_date = moment(data.max_create_date).format('YYYY-MM-DD');
+        }
+        return data;
+    };
+
+    $scope.refreshData = function () {
+        $scope.getPage();
+    };
+
+    $scope.export = function (format) {
+        params = {_format: format};
+        if ($scope.sortingOptions) {
+            params.ordering=$scope.sortingOptions;
+        }
+        if ($scope.filteringOptions) {
+            var filteringData = $scope.getSerializedFiltering();
+            angular.extend(params, filteringData);
+        }
+        var encodedParams = $httpParamSerializer(params);
+        Utils.download('/api/v1/report/sales/export?'+encodedParams);
+    };
+
 });

@@ -108,6 +108,17 @@ app.service('Utils', [function() {
         }
         return -1;
     };
+    this.download = function downloadURL(url) {
+        var hiddenIFrameID = 'hiddenDownloader',
+            iframe = document.getElementById(hiddenIFrameID);
+        if (iframe === null) {
+            iframe = document.createElement('iframe');
+            iframe.id = hiddenIFrameID;
+            iframe.style.display = 'none';
+            document.body.appendChild(iframe);
+        }
+        iframe.src = url;
+    };
 }]);
 
 app.factory('UiUtils', ['uiGridConstants', 'Utils', function(uiGridConstants, Utils) {
@@ -171,6 +182,10 @@ app.factory('GeneralUiGrid', ['uiGridConstants', 'Utils', function(uiGridConstan
                 };
                 if ($scope.sortingOptions) {
                     params.ordering=$scope.sortingOptions;
+                }
+                if ($scope.filteringOptions) {
+                    var filteringData = $scope.getSerializedFiltering? $scope.getSerializedFiltering(): $scope.filteringOptions;
+                    angular.extend(params, filteringData);
                 }
                 queryService.query(params, function(response) {
                     var pg = response.pagination;
@@ -275,6 +290,14 @@ app.factory('OrderService', ['$resource', function($resource) {
         update: {
             method: 'PUT'
         },
+        query: {
+            method:'GET', isArray: false
+        }
+    });
+}]);
+
+app.factory('SalesReportService', ['$resource', function($resource) {
+    return $resource('/api/v1/report/sales/', {}, {
         query: {
             method:'GET', isArray: false
         }

@@ -114,7 +114,7 @@ class OrderSerializer(DynamicFieldsSerializerMixin, serializers.ModelSerializer)
         model = Order
         fields = ('id', 'customer', 'clerk', 'order_items', 'status', 'create_datetime', 'update_datetime',
                   'total_items', 'total_quantity', 'total_price', '_customer')
-        read_only_fields = ('status', 'total_quantity', 'total_price')
+        read_only_fields = ('status', 'total_quantity', 'total_price', 'clerk')
 
     def save_order_items(self, order, order_items_data, created=True):
         product_items = {}
@@ -178,6 +178,7 @@ class OrderSerializer(DynamicFieldsSerializerMixin, serializers.ModelSerializer)
     def create(self, validated_data):
         order_items_data = validated_data.pop('order_items', None) or []
         order = super(OrderSerializer, self).create(validated_data)
+        order.clerk = self.context['request'].user
         self.save_order_items(order, order_items_data)
         order.save()
         return order
@@ -185,5 +186,10 @@ class OrderSerializer(DynamicFieldsSerializerMixin, serializers.ModelSerializer)
     @transaction.atomic()
     def update(self, instance, validated_data):
         order_items_data = validated_data.pop('order_items') or []
+        instance.clerk = self.context['request'].user
         self.save_order_items(instance, order_items_data, created=False)
         return super(OrderSerializer, self).update(instance, validated_data)
+
+
+class SalesReportSerializer(serializers.Serializer):
+    pass

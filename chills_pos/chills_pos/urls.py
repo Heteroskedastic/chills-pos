@@ -22,7 +22,7 @@ from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token, \
     verify_jwt_token
 from django.views.static import serve
 
-from pos.rest_api.views import SessionView, ProductView, CustomerView, OrderView, ProfileView, UnitView
+from pos.rest_api.views import SessionView, ProductView, CustomerView, OrderView, ProfileView, UnitView, SalesReportView
 
 # register all rest views here
 from pos.views import IndexView, LoginView, CustomerCardsView
@@ -35,7 +35,7 @@ rest_router.register(r'product', ProductView, base_name='product')
 rest_router.register(r'unit', UnitView, base_name='unit')
 rest_router.register(r'customer', CustomerView, base_name='customer')
 rest_router.register(r'order', OrderView, base_name='order')
-
+rest_router.register(r'report/sales',SalesReportView, base_name='report')
 
 urlpatterns = [
     # url(r'^$', RedirectView.as_view(url='/api/v1/')),

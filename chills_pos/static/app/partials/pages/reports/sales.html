@@ -1,0 +1,85 @@
+<!-- END SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+<!-- BEGIN PAGE HEADER-->
+<ng-include src="'app/partials/pagebar.html'"></ng-include>
+<div class="pull-right">
+    <!-- Single button -->
+    <button class="btn btn-primary" title="Refresh Table" ng-click="refreshData()"><i class="fa fa-refresh"></i></button>
+    <button class="btn btn-success" title="Export to CSV" ng-click="export('csv')"><i class="fa fa-download"></i> CSV</button>
+    <button class="btn btn-success" title="Export to Excel" ng-click="export('xls')" disabled="true"><i class="fa fa-download"></i> XLS</button>
+</div>
+<h3 class="page-title">
+{{$state.current.data.pageInfo.title}} <small>{{$state.current.data.pageInfo.titleDesc}}</small>
+</h3>
+<!-- END PAGE HEADER-->
+<div class="filters">
+    <div class="col-md-12 portlet light">
+        <form role="form">
+            <div class="row">
+                <div class="col-md-6 form-group">
+                    <label class="control-label">Product</label>
+                    <ui-select autofocus focus-on="ProductFilteringFocus" data-ng-model="filteringOptions.product" theme="bootstrap" on-select="refreshData()">
+                        <ui-select-match allow-clear="true" placeholder="Filter by Product">
+                            {{$select.selected.name}}
+                        </ui-select-match>
+                        <ui-select-choices repeat="item.id as item in $global.Product.comboData | filter: $select.search" value="{{$select.selected.id}}">
+                            <span ng-bind-html="item.name | highlight: $select.search"></span>
+                        </ui-select-choices>
+                    </ui-select>
+                </div>
+                <div class="col-md-6 form-group">
+                    <label class="control-label">Customer</label>
+                    <ui-select focus-on="CustomerFilteringFocus" data-ng-model="filteringOptions.customer" theme="bootstrap" on-select="refreshData()">
+                        <ui-select-match allow-clear="true" placeholder="Filter by Customer">
+                            {{$select.selected.first_name}} {{$select.selected.last_name}}
+                        </ui-select-match>
+                        <ui-select-choices repeat="item.id as item in $global.Customer.comboData | filter: $select.search" value="{{$select.selected.id}}">
+                            <span ng-bind-html="item.first_name + ' ' + item.last_name | highlight: $select.search"></span>
+                        </ui-select-choices>
+                    </ui-select>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 form-group">
+                    <label class="control-label">Unit</label>
+                    <ui-select focus-on="UnitFilteringFocus" data-ng-model="filteringOptions.unit" theme="bootstrap" on-select="refreshData()">
+                        <ui-select-match allow-clear="true" placeholder="Filter by Unit">
+                            {{$select.selected.name}}
+                        </ui-select-match>
+                        <ui-select-choices repeat="item.id as item in $global.Unit.comboData | filter: $select.search" value="{{$select.selected.id}}">
+                            <span ng-bind-html="item.name | highlight: $select.search"></span>
+                        </ui-select-choices>
+                    </ui-select>
+                </div>
+                <div class="col-md-6 form-group">
+                    <label class="control-label">Date Range</label>
+                    <p class="input-group">
+                      <input type="text" placeholder="From Date" class="form-control" uib-datepicker-popup="yyyy-MM-dd" data-ng-model="filteringOptions.min_create_date" is-open="popup1.opened" close-text="Close" alt-input-formats="altInputFormats" data-ng-model-options="{timezone: 'utc'}" ng-change="refreshData()" />
+                      <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="popup1.opened=true"><i class="glyphicon glyphicon-calendar"></i></button>
+                      </span>
+                      <input type="text" placeholder="To Date" class="form-control" uib-datepicker-popup="yyyy-MM-dd" data-ng-model="filteringOptions.max_create_date" is-open="popup2.opened" close-text="Close" alt-input-formats="altInputFormats" data-ng-model-options="{timezone: 'utc'}" ng-change="refreshData()" />
+                      <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="popup2.opened=true"><i class="glyphicon glyphicon-calendar"></i></button>
+                      </span>
+                    </p>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="clearfix">
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div ui-grid="$global.SalesReport.gridOptions" ui-grid-pagination class="grid">
+            <div class="grid-msg-overlay" ng-hide="!loadingGrid">
+                <div class="msg">
+                    <span>
+                      <i class="fa fa-spinner fa-spin fa-2x"></i>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

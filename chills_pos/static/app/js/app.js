@@ -171,6 +171,17 @@ app.config(function($stateProvider, $urlRouterProvider) {
             }
         },
         controller  : 'OrderEditCtrl'
+    }).state('report-sales', {
+        url: "/reports/sales/",
+        templateUrl : 'app/partials/pages/reports/sales.html',
+        data: {
+            pageInfo: {
+                title: 'Sales Report',
+                titleDesc: 'report of order item sales',
+                back: 'dashboard'
+            }
+        },
+        controller: 'SalesReportCtrl'
     });
 });
 
