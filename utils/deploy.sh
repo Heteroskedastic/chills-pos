@@ -11,13 +11,15 @@ ROOTDIR=/opt/webapps
 PROJECTDIR=$ROOTDIR/$NAME
 DJANGODIR=$PROJECTDIR/$NAME
 ENVDIR=$PROJECTDIR/env
-DJANGO_SETTINGS_MODULE=chills_pos.settings.prod
+DJANGO_SETTINGS_MODULE=chills_pos.settings.main
 
 echo "+++ Deploying $NAME: BRANCH=$BRANCH PROJECTDIR=$PROJECTDIR ..."
 
 mkdir -p $PROJECTDIR
 mkdir -p $PROJECTDIR/run
 mkdir -p $PROJECTDIR/logs
+mkdir -p $PROJECTDIR/etc
+
 if [ -d "$DJANGODIR" ]; then
     cd $DJANGODIR
     git reset --hard HEAD

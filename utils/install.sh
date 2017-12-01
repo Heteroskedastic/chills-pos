@@ -26,7 +26,7 @@ ROOTDIR=/opt/webapps
 PROJECTDIR=$ROOTDIR/$NAME
 DJANGODIR=$PROJECTDIR/$NAME
 ENVDIR=$PROJECTDIR/env
-DJANGO_SETTINGS_MODULE=chills_pos.settings.prod
+DJANGO_SETTINGS_MODULE=chills_pos.settings.main
 USER=appuser                                      # the user to run as
 GROUP=appuser                                     # the group to run as
 
@@ -36,6 +36,7 @@ sudo chown $USER:$GROUP $ROOTDIR -R
 mkdir -p $PROJECTDIR
 mkdir -p $PROJECTDIR/run
 mkdir -p $PROJECTDIR/logs
+mkdir -p $PROJECTDIR/etc
 
 if [ -d "$DJANGODIR" ]; then
     cd $DJANGODIR
@@ -45,6 +46,7 @@ if [ -d "$DJANGODIR" ]; then
 else
     git clone $GITURL -b $BRANCH $DJANGODIR
 fi
+cp $DJANGODIR/chills_pos/chills_pos/settings/external_config_sample.py $PROJECTDIR/etc/external_config.py
 
 virtualenv -p python3 $ENVDIR
 source $ENVDIR/bin/activate

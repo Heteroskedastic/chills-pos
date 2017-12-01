@@ -5,7 +5,7 @@ ROOTDIR=/opt/webapps
 PROJECTDIR=$ROOTDIR/$NAME
 DJANGODIR=$PROJECTDIR/$NAME
 ENVDIR=$PROJECTDIR/env
-DJANGO_SETTINGS_MODULE=chills_pos.settings.prod
+DJANGO_SETTINGS_MODULE=chills_pos.settings.main
 BACKUP_DIR=$PROJECTDIR/backup/`date +"%Y-%m-%d-%H-%M-%S"`.$RANDOM
 
 echo "+++ Backing up $NAME to $BACKUP_DIR ..."

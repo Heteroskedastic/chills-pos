@@ -15,8 +15,8 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import datetime
 
-BASE_DIR = os.path.dirname(
-    os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+EXTERNAL_CONFIG_PATH = '/opt/webapps/chills_pos/etc/external_config.py'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
@@ -269,12 +269,3 @@ REDIS_MEM_HOST = 'localhost'
 REDIS_MEM_PORT = 6379
 REDIS_MEM_DB = 1
 REDIS_MEM_PREFIX = 'chills-pos:'
-
-#######################################
-##### Try to load secret settings #####
-#######################################
-try:
-    from .secret import *
-except ImportError:
-    pass
-JWT_AUTH['JWT_SECRET_KEY'] = SECRET_KEY

@@ -6,7 +6,7 @@ PROJECTDIR=$ROOTDIR/$NAME
 DJANGODIR=$PROJECTDIR/$NAME
 ENVDIR=$PROJECTDIR/env
 SOCKFILE=$PROJECTDIR/run/$NAME-celery.sock
-DJANGO_SETTINGS_MODULE=chills_pos.settings.prod             # which settings file should Django use
+DJANGO_SETTINGS_MODULE=chills_pos.settings.main             # which settings file should Django use
 
 echo "Starting $NAME-celery as `whoami`"
 
