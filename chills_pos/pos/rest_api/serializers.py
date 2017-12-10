@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Permission, Group
 from django.db import IntegrityError
 from django.db import transaction
 from django.db.models import F
@@ -24,8 +24,22 @@ class NestedProfileSerializer(serializers.ModelSerializer):
         read_only_fields = ('avatar', )
 
 
+class NestedPermissionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Permission
+        fields = ('id', 'codename')
+
+
+class NestedGroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Group
+        fields = ('id', 'name')
+
+
 class UserSerializer(serializers.ModelSerializer):
     profile = NestedProfileSerializer()
+    groups = NestedGroupSerializer(many=True)
+    user_permissions = NestedPermissionSerializer(many=True)
 
     class Meta:
         model = User

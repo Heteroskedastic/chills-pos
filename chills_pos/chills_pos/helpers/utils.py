@@ -7,6 +7,7 @@ import decimal
 from django.contrib import messages
 from django.shortcuts import render
 from django.http import JsonResponse
+from django.db import IntegrityError
 from django.utils import six
 from django.core.urlresolvers import reverse
 from django.utils.safestring import mark_safe
@@ -18,8 +19,8 @@ from django.core.exceptions import PermissionDenied
 from django.contrib.auth.mixins import PermissionRequiredMixin as \
     DjangoPermissionRequiredMixin
 from rest_framework.pagination import PageNumberPagination, _positive_int
-from rest_framework.views import exception_handler
-from rest_framework import exceptions
+from rest_framework.permissions import DjangoModelPermissions
+from rest_framework import status
 from rest_framework.response import Response
 from django.core.files.base import ContentFile
 from rest_framework import serializers
@@ -269,13 +270,19 @@ class CustomPagination(PageNumberPagination):
 
 def custom_rest_exception_handler(exc, context):
     ''' Custom rest api exception handler '''
+    from rest_framework import exceptions
+    from rest_framework.compat import set_rollback
+    from rest_framework.views import exception_handler
     response = exception_handler(exc, context)
+    if isinstance(exc, IntegrityError) and ('already exists' in str(exc) or 'must make a unique set' in str(exc)):
+        data = {'detail': 'duplicate unique key'}
+        set_rollback()
+        return Response(data, status=status.HTTP_409_CONFLICT)
     if isinstance(exc, exceptions.NotAuthenticated):
-        response.status_code = 401
-    if isinstance(exc, exceptions.ValidationError) and \
-            ('already exists' in str(exc) or
-             'must make a unique set' in str(exc)):
-        response.status_code = 409
+        response.status_code = status.HTTP_401_UNAUTHORIZED
+    if isinstance(exc, exceptions.ValidationError) and (
+            'already exists' in str(exc) or 'must make a unique set' in str(exc)):
+        response.status_code = status.HTTP_409_CONFLICT
 
     return response
 
@@ -342,3 +349,15 @@ class Base64ImageField(serializers.ImageField):
             id = uuid.uuid4()
             data = ContentFile(base64.b64decode(imgstr), name = id.urn[9:] + '.' + ext)
         return super(Base64ImageField, self).to_internal_value(data)
+
+
+class CustomDjangoModelPermissions(DjangoModelPermissions):
+    perms_map = {
+        'OPTIONS': [],
+        'HEAD': [],
+        'GET': ['%(app_label)s.view_%(model_name)s'],
+        'POST': ['%(app_label)s.add_%(model_name)s'],
+        'PUT': ['%(app_label)s.change_%(model_name)s'],
+        'PATCH': ['%(app_label)s.change_%(model_name)s'],
+        'DELETE': ['%(app_label)s.delete_%(model_name)s'],
+    }

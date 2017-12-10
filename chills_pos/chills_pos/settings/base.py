@@ -207,7 +207,7 @@ SOCIAL_AUTH_PIPELINE = (
 REST_FRAMEWORK = {
     'EXCEPTION_HANDLER': 'chills_pos.helpers.utils.custom_rest_exception_handler',
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.DjangoModelPermissions'
+        'chills_pos.helpers.utils.CustomDjangoModelPermissions'
     ],
     'DEFAULT_PAGINATION_CLASS': 'chills_pos.helpers.utils.CustomPagination',
     'DEFAULT_FILTER_BACKENDS': ('rest_framework.filters.DjangoFilterBackend',

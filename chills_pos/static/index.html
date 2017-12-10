@@ -157,42 +157,42 @@ body {
             <!-- DOC: Set data-keep-expand="true" to keep the submenues expanded -->
             <!-- DOC: Set data-auto-speed="200" to adjust the sub menu slide up/down speed -->
             <ul class="page-sidebar-menu page-sidebar-menu-accordion-submenu" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="100">
-                <li class="start" data-ng-class="menuActiveIf('dashboard')">
+                <li class="start" data-ng-class="menuActiveIf('dashboard')" data-ng-if="hasAuthority('ui:view_dashboard')">
                     <a href="{{ $state.href('dashboard') }}">
                     <i class="fa fa-home"></i>
                     <span class="title">{{ $state.get('dashboard').data.pageInfo.title }}</span>
                     <span class="selected"></span>
                     </a>
                 </li>
-                <li class="start" data-ng-class="menuActiveIf('order-list', 'order-new', 'order-edit')">
+                <li class="start" data-ng-class="menuActiveIf('order-list', 'order-new', 'order-edit')" data-ng-if="hasAuthority('view_order')">
                     <a href="{{ $state.href('order-list') }}">
                     <i class="fa fa-shopping-cart"></i>
                     <span class="title">{{ $state.get('order-list').data.pageInfo.title }}</span>
                     <span class="selected"></span>
                     </a>
                 </li>
-                <li class="start" data-ng-class="menuActiveIf('customer-list', 'customer-new', 'customer-edit')">
+                <li class="start" data-ng-class="menuActiveIf('customer-list', 'customer-new', 'customer-edit')" data-ng-if="hasAuthority('view_customer')">
                     <a href="{{ $state.href('customer-list') }}">
                     <i class="fa fa-users"></i>
                     <span class="title">{{ $state.get('customer-list').data.pageInfo.title }}</span>
                     <span class="selected"></span>
                     </a>
                 </li>
-                <li class="start" data-ng-class="menuActiveIf('product-list', 'product-new', 'product-edit')">
+                <li class="start" data-ng-class="menuActiveIf('product-list', 'product-new', 'product-edit')" data-ng-if="hasAuthority('view_product')">
                     <a href="{{ $state.href('product-list') }}">
                     <i class="fa fa-list-ul"></i>
                     <span class="title">{{ $state.get('product-list').data.pageInfo.title }}</span>
                     <span class="selected"></span>
                     </a>
                 </li>
-                <li class="start" data-ng-class="menuActiveIf('unit-list', 'unit-new', 'unit-edit')">
+                <li class="start" data-ng-class="menuActiveIf('unit-list', 'unit-new', 'unit-edit')" data-ng-if="hasAuthority('view_unit')">
                     <a href="{{ $state.href('unit-list') }}">
                     <i class="fa fa-th-large"></i>
                     <span class="title">{{ $state.get('unit-list').data.pageInfo.title }}</span>
                     <span class="selected"></span>
                     </a>
                 </li>
-                <li class="start" data-ng-class="menuActiveIf('report-sales')">
+                <li class="start" data-ng-class="menuActiveIf('report-sales')" data-ng-if="hasAuthority('view_reports')">
                     <a href="javascript:">
                         <i class="fa fa-bar-chart"></i>
                         <span class="title">Reports</span>

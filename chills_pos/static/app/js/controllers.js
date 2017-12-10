@@ -25,6 +25,9 @@ app.controller("MainCtrl", function($scope, $rootScope, $http, $window, Utils, S
         $rootScope.pageLoaded = true;
         $('body').css('background-image', 'none').removeClass('hide');
         Index.initCharts();
+        if ($rootScope.isCheckoutOnlyUser()) {
+            $rootScope.$state.go('order-new', undefined, {location: 'replace'});
+        }
     }, function(response) {
         Utils.showDefaultServerError(response);
     });

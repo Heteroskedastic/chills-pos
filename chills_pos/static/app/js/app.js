@@ -1,7 +1,16 @@
 var app = angular.module("chillsPos", ['ui.router', 'ngResource', 'ngAnimate', 'ui.bootstrap', 'ui.grid', 'ui.grid.pagination', 'ui.select', 'ngSanitize', 'oc.lazyLoad']);
 
 app.config(function($stateProvider, $urlRouterProvider) {
-    $urlRouterProvider.otherwise("/dashboard");
+    // $urlRouterProvider.otherwise("/dashboard");
+    $urlRouterProvider.otherwise(function ($injector, $location) {
+        var $state = $injector.get('$state'),
+            $rootScope = $injector.get('$rootScope');
+        if ($rootScope.isCheckoutOnlyUser()) {
+            $state.go('order-new', undefined, {location: 'replace'});
+        } else {
+            $state.go('dashboard', undefined, {location: 'replace'});
+        }
+    });
     $stateProvider
     .state('dashboard', {
         url: "/dashboard",
@@ -220,4 +229,23 @@ app.run(["$rootScope", "$state", function($rootScope, $state) {
             $state.go(to.redirectTo, params, {location: 'replace'})
         }
     });
+    $rootScope.isCheckoutOnlyUser = function () {
+        if (!$rootScope.currentUser.groups) {
+            return false;
+        }
+        if ($rootScope.__isCheckoutOnlyUser === undefined) {
+            var CHECKOUT_ONLY_GROUP = "checkout only";
+            $rootScope.__isCheckoutOnlyUser = $rootScope.currentUser.groups.find(function(g) {
+                return g.name.toLowerCase() === CHECKOUT_ONLY_GROUP;
+            }) !== undefined;
+        }
+        return $rootScope.__isCheckoutOnlyUser;
+
+    };
+    $rootScope.hasAuthority = function(auth) {
+        if ($rootScope.isCheckoutOnlyUser()) {
+            return auth === 'view_order';
+        }
+        return true;
+    }
 }]);
