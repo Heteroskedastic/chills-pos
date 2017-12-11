@@ -124,7 +124,7 @@ app.service('Utils', [function() {
 app.factory('UiUtils', ['uiGridConstants', 'Utils', function(uiGridConstants, Utils) {
     return {
         getOrderItemPriceSum: function ($scope, $rootScope) {
-            return function() {
+            return function(type) {
                 if (!$scope.selectedRecord || !$rootScope.$global.Product.comboData) {
                     return 0;
                 }
@@ -137,11 +137,59 @@ app.factory('UiUtils', ['uiGridConstants', 'Utils', function(uiGridConstants, Ut
                     product = $rootScope.$global.Product.comboData.filter(function(p) {
                         return p.id==orderItem.product;
                     })[0];
+                    if (type && (type !== product.type)) {
+                        continue;
+                    }
                     sum += (orderItem.quantity || 0) * product.price;
                 }
                 return sum;
-            }
+            };
+        },
+        getOrderItemQuantitySum: function ($scope, $rootScope) {
+            return function(type) {
+                if (!$scope.selectedRecord || !$rootScope.$global.Product.comboData) {
+                    return 0;
+                }
+                var sum = 0, product, productId, orderItem;
+                for (var i=0; i<$scope.selectedRecord.order_items.length; i++) {
+                    orderItem = $scope.selectedRecord.order_items[i];
+                    if (!orderItem.product) {
+                        continue;
+                    }
+                    product = $rootScope.$global.Product.comboData.filter(function(p) {
+                        return p.id==orderItem.product;
+                    })[0];
+                    if (type && (type !== product.type)) {
+                        continue;
+                    }
+                    sum += (orderItem.quantity || 0);
+                }
+                return sum;
+            };
+        },
+        getOrderItemCount: function ($scope, $rootScope) {
+            return function(type) {
+                if (!$scope.selectedRecord || !$rootScope.$global.Product.comboData) {
+                    return 0;
+                }
+                var sum = 0, product, productId, orderItem;
+                for (var i=0; i<$scope.selectedRecord.order_items.length; i++) {
+                    orderItem = $scope.selectedRecord.order_items[i];
+                    if (!orderItem.product) {
+                        continue;
+                    }
+                    product = $rootScope.$global.Product.comboData.filter(function(p) {
+                        return p.id==orderItem.product;
+                    })[0];
+                    if (type && (type !== product.type)) {
+                        continue;
+                    }
+                    sum += 1;
+                }
+                return sum;
+            };
         }
+
     }
 }]);
 

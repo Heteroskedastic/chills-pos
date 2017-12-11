@@ -336,3 +336,23 @@ table .footer td {
         display: none;
     }
 }
+
+.label.product-type-small {
+    font-size: 11px;
+    padding: 3px;
+}
+
+.balance-caret {
+    font-style: normal;
+    color: #ceced4;
+}
+
+.order-after-sale-label {
+    font-weight: bold;
+    color: black;
+}
+
+.order-after-sale {
+    background-color: #e5eafd;
+    padding: 6px;
+}

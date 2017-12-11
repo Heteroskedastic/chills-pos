@@ -43,8 +43,14 @@ class UserProfile(models.Model):
     avatar = models.ImageField('Avatar', blank=True, null=True, upload_to=avatar_file_path_func)
 
 
-
 class Product(models.Model):
+    TYPE_NEEDS = 'needs'
+    TYPE_WANT = 'want'
+    TYPE_CHOICES = (
+        (TYPE_NEEDS, 'Needs'),
+        (TYPE_WANT, 'Want'),
+    )
+
     name = models.CharField("Name", max_length=512, unique=True)
     description = models.TextField("Description", null=True, blank=True)
     quantity = models.PositiveIntegerField('Quantity', default=0)
@@ -53,6 +59,7 @@ class Product(models.Model):
     reorder_limit = models.PositiveIntegerField('Re-order Limit', default=0)
     price = models.DecimalField("Price", max_digits=8, decimal_places=2)
     purchase_price = models.DecimalField("Purchase Price", max_digits=8, decimal_places=2)
+    type = models.CharField("Type", max_length=8, choices=TYPE_CHOICES, default=TYPE_NEEDS)
     active = models.BooleanField("Active", default=True)
 
     def __str__(self):
@@ -71,27 +78,14 @@ class Customer(models.Model):
     first_name = models.CharField("First Name", max_length=256)
     last_name = models.CharField("Last Name", max_length=256)
     uid = models.CharField('Id Number', max_length=256, null=True, blank=True, unique=True)
-    points = models.PositiveIntegerField('Points', default=0)
+    needs_balance = models.DecimalField("Needs Account Balance", max_digits=8, decimal_places=2, default=0)
+    want_balance = models.DecimalField("Want Account Balance", max_digits=8, decimal_places=2, default=0)
     unit = models.ForeignKey(Unit, null=True, related_name='customer', on_delete=models.SET_NULL)
     photo = models.ImageField('Photo', blank=True, null=True, upload_to=customer_photo_file_path_func)
 
     def __str__(self):
         return '{} {}'.format(self.first_name, self.last_name)
 
-
-# class Cart(models.Model):
-#     customer = models.ForeignKey(Customer, related_name="cart", on_delete=models.CASCADE)
-#     clerk = models.ForeignKey(User, related_name="cart", on_delete=models.CASCADE)
-#     product = models.ForeignKey(Product, related_name='cart', on_delete=models.CASCADE)
-#     create_datetime = models.DateTimeField("Create Datetime", auto_now_add=True)
-#     quantity = models.IntegerField("Quantity", default=0)
-#
-#     def __str__(self):
-#         return '{}'.format(self.product)
-#
-#     class Meta:
-#         unique_together = (('customer', 'clerk', 'product'),)
-#
 
 class Order(models.Model):
     STATUS_NEW = 'new'
@@ -110,19 +104,29 @@ class Order(models.Model):
     customer = models.ForeignKey(Customer, related_name="order", on_delete=models.CASCADE)
     clerk = models.ForeignKey(User, related_name="order", on_delete=models.SET_NULL, null=True)
     status = models.CharField("Status", max_length=32, choices=STATUS_CHOICES, default=STATUS_NEW)
-    total_quantity = models.PositiveIntegerField("Quantity", default=0)
-    total_price = models.DecimalField("Price", max_digits=8, decimal_places=2, default=0)
+    needs_total_quantity = models.PositiveIntegerField("Quantity(Needs)", default=0)
+    needs_total_price = models.DecimalField("Price(Needs)", max_digits=8, decimal_places=2, default=0)
+    want_total_quantity = models.PositiveIntegerField("Quantity(Want)", default=0)
+    want_total_price = models.DecimalField("Price(Want)", max_digits=8, decimal_places=2, default=0)
 
     create_datetime = models.DateTimeField("Create Datetime", auto_now_add=True)
     update_datetime = models.DateTimeField("Update Datetime", auto_now=True)
 
     @property
     def status_display(self):
-        return dict(self.STATUS_CHOICES).get(self.status, self.STATUS_PENDING)
+        return dict(self.STATUS_CHOICES).get(self.status, self.STATUS_NEW)
 
     @property
     def total_items(self):
         return self.order_items.count() or 0
+
+    @property
+    def needs_total_items(self):
+        return self.order_items.filter(product__type=Product.TYPE_NEEDS).count() or 0
+
+    @property
+    def want_total_items(self):
+        return self.order_items.filter(product__type=Product.TYPE_WANT).count() or 0
 
     def __str__(self):
         return '{}'.format(self.customer)

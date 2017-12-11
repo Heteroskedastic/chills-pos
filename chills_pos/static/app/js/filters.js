@@ -37,6 +37,18 @@ app.filter('displayObject', function () {
     };
 });
 
+app.filter('productTypeFormat', function () {
+    return function (input, extraCss) {
+        var html = input;
+        if(input === 'needs') {
+            html = '<span class="label label-danger {0}">Needs</span>';
+        } else if(input === 'want') {
+            html = '<span class="label label-success {0}">Want</span>';
+        }
+        return html.f(extraCss || '');
+    };
+});
+
 app.filter('orderObjectBy', function() {
     return function(items, field, reverse) {
         var filtered = [];

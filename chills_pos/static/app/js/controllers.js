@@ -11,7 +11,9 @@ app.controller("MainCtrl", function($scope, $rootScope, $http, $window, Utils, S
     $rootScope.pageLoaded = false;
     $rootScope.$global.Unit = {};
     $rootScope.$global.Customer = {};
-    $rootScope.$global.Product = {};
+    $rootScope.$global.Product = {
+        typesComboData: [{title: 'Needs', value: 'needs'}, {title: 'Want', value: 'want'}]
+    };
     $rootScope.$global.Order = {};
     $rootScope.$global.SalesReport = {};
 
@@ -47,7 +49,7 @@ app.controller("MainCtrl", function($scope, $rootScope, $http, $window, Utils, S
 
     $rootScope.loadCustomerCombo = function() {
         if (!$rootScope.$global.Customer.comboData) {
-            CustomerService.query({page_size: 0, ordering: 'first_name,last_name', fields: 'id,first_name,last_name,uid,_unit,photo,points'}, function(response) {
+            CustomerService.query({page_size: 0, ordering: 'first_name,last_name', fields: 'id,first_name,last_name,uid,_unit,photo,needs_balance,want_balance'}, function(response) {
                 $rootScope.$global.Customer.comboData = response.results;
             });
         }
@@ -55,7 +57,7 @@ app.controller("MainCtrl", function($scope, $rootScope, $http, $window, Utils, S
 
     $rootScope.loadProductCombo = function() {
         if (!$rootScope.$global.Product.comboData) {
-            ProductService.query({page_size: 0, ordering: 'name', fields: 'id,name,quantity,upc,part_number,price', active:true}, function(response) {
+            ProductService.query({page_size: 0, ordering: 'type,name', fields: 'id,name,quantity,upc,part_number,price,type', active:true}, function(response) {
                 $rootScope.$global.Product.comboData = response.results;
             });
         }
@@ -239,6 +241,9 @@ app.controller("ProductListCtrl", function($scope, $rootScope, $state, $statePar
                 {name: 'name', 'displayName': 'Name',
                     cellTemplate: '<div class="ui-grid-cell-contents ng-binding ng-scope"><a class="text text-primary" href="{{grid.appScope.$state.href(\'product-edit\', {id: row.entity.id})}}">{{row.entity.name}}</a></div>'
                 },
+                {name: 'type', 'displayName': 'Type',
+                    cellTemplate: '<div class="ui-grid-cell-contents ng-binding ng-scope" ng-bind-html="row.entity.type|productTypeFormat"></div>'
+                },
                 {name: 'upc', 'displayName': 'UPC'},
                 {name: 'part_number', 'displayName': 'Part Number'},
                 {name: 'reorder_limit', 'displayName': 'Re-order Limit'},
@@ -267,7 +272,7 @@ app.controller("ProductListCtrl", function($scope, $rootScope, $state, $statePar
 
 app.controller("ProductNewCtrl", function($scope, $rootScope, $state,$stateParams, ProductService, Utils) {
     var $global = $rootScope.$global.Product;
-    $scope.selectedRecord = new ProductService({quantity: 0, reorder_limit: 0, active: true});
+    $scope.selectedRecord = new ProductService({quantity: 0, reorder_limit: 0, active: true, type: 'needs'});
     $scope.addRecord = function() {
         $scope.saving = true;
         $scope.selectedRecord.$save().then(function(response) {
@@ -400,7 +405,8 @@ app.controller("CustomerListCtrl", function($scope, $rootScope, $state, $statePa
                     cellTemplate: '<div class="ui-grid-cell-contents ng-binding ng-scope"><a class="text text-primary" href="{{grid.appScope.$state.href(\'customer-edit\', {id: row.entity.id})}}">{{row.entity.last_name}}</a></div>'
                 },
                 {name: 'uid', 'displayName': 'UID'},
-                {name: 'points', 'displayName': 'Points'},
+                {name: 'needs_balance', 'displayName': 'Balance (Needs)', cellFilter: 'currency'},
+                {name: 'want_balance', 'displayName': 'Balance (Want)', cellFilter: 'currency'},
                 {name: 'unit', 'displayName': 'Unit',
                     cellTemplate: '<div class="ui-grid-cell-contents ng-binding ng-scope">{{row.entity._unit.name|default:"-"}}</div>'
                 }
@@ -836,11 +842,17 @@ app.controller("OrderListCtrl", function($scope, $rootScope, $state, $stateParam
                 {name: 'customer', 'displayName': 'Customer',
                     cellTemplate: '<div class="ui-grid-cell-contents ng-binding ng-scope"><a class="text text-primary" href="{{grid.appScope.$state.href(\'order-edit\', {id: row.entity.id})}}">{{row.entity._customer.first_name + " " + row.entity._customer.first_name }}</a></div>'
                 },
-                {name: 'total_items', 'displayName': 'Total Items'},
-                {name: 'total_quantity', 'displayName': 'Total Quantity'},
-                {name: 'total_price', 'displayName': 'Total Price', cellFilter: 'currency'},
+                {name: 'total_items', 'displayName': 'Total Items',
+                    cellTemplate: '<div class="ui-grid-cell-contents ng-binding ng-scope"><strong>{{row.entity.needs_total_items + row.entity.want_total_items }}</strong> <sub><span class="text-danger"><strong>{{row.entity.needs_total_items}}</strong> needs</span> + <span class="text-success"><strong>{{row.entity.want_total_items}}</strong> want</span></sub></div>'
+                },
+                {name: 'total_quantity', 'displayName': 'Total Quantity',
+                    cellTemplate: '<div class="ui-grid-cell-contents ng-binding ng-scope"><strong>{{row.entity.needs_total_quantity + row.entity.want_total_quantity }}</strong> <sub><span class="text-danger"><strong>{{row.entity.needs_total_quantity}}</strong> needs</span> + <span class="text-success"><strong>{{row.entity.want_total_quantity}}</strong> want</span></sub></div>'
+                },
+                {name: 'total_price', 'displayName': 'Total Price',
+                    cellTemplate: '<div class="ui-grid-cell-contents ng-binding ng-scope">$<strong>{{row.entity.needs_total_price + row.entity.want_total_price }}</strong> <sub><span class="text-danger">$<strong>{{row.entity.needs_total_price}}</strong> needs</span> + <span class="text-success">$<strong>{{row.entity.want_total_price}}</strong> want</span></sub></div>'
+                },
                 {name: 'create_datetime', 'displayName': 'Created At', cellFilter: 'date: "MMM dd yyyy hh:mm a"'},
-                {name: 'status', 'displayName': 'Status'}
+                {name: 'status', 'displayName': 'Status', width: 70}
 
             ]
             // onRegisterApi: GeneralUiGrid.onRegisterApi($scope)
@@ -861,6 +873,8 @@ app.controller("OrderNewCtrl", function($scope, $rootScope, $state,$stateParams,
     var $global = $rootScope.$global.Order;
     $scope.selectedRecord = new OrderService({order_items: [{quantity: 1}]});
     $scope.getPriceSum = UiUtils.getOrderItemPriceSum($scope, $rootScope);
+    $scope.getQuantitySum = UiUtils.getOrderItemQuantitySum($scope, $rootScope);
+    $scope.getItemsCount = UiUtils.getOrderItemCount($scope, $rootScope);
     $scope.insertAfter = function (idx) {
         if (idx == undefined) {
             $scope.selectedRecord.order_items.push({quantity: 1});
@@ -906,6 +920,8 @@ app.controller("OrderEditCtrl", function($scope, $rootScope, $state,$stateParams
     $rootScope.loadProductCombo();
     $rootScope.loadCustomerCombo();
     $scope.getPriceSum = UiUtils.getOrderItemPriceSum($scope, $rootScope);
+    $scope.getQuantitySum = UiUtils.getOrderItemQuantitySum($scope, $rootScope);
+    $scope.getItemsCount = UiUtils.getOrderItemCount($scope, $rootScope);
     $scope.insertAfter = function (idx) {
         if (idx == undefined) {
             $scope.selectedRecord.order_items.push({quantity: 1});

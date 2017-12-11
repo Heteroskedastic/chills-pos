@@ -113,7 +113,7 @@ class NestedCustomerSerializer(serializers.ModelSerializer):
 
 
 class OrderItemSerializer(serializers.ModelSerializer):
-
+    product = serializers.PrimaryKeyRelatedField(required=True, queryset=Product.objects.all())
     class Meta:
         model = OrderItem
         fields = ('id', 'product', 'quantity', 'price')
@@ -127,15 +127,18 @@ class OrderSerializer(DynamicFieldsSerializerMixin, serializers.ModelSerializer)
     class Meta:
         model = Order
         fields = ('id', 'customer', 'clerk', 'order_items', 'status', 'create_datetime', 'update_datetime',
-                  'total_items', 'total_quantity', 'total_price', '_customer')
-        read_only_fields = ('status', 'total_quantity', 'total_price', 'clerk')
+                  'needs_total_items', 'needs_total_quantity', 'needs_total_price',
+                  'want_total_items', 'want_total_quantity', 'want_total_price',
+                  '_customer')
+        read_only_fields = ('status', 'needs_total_items', 'needs_total_quantity', 'needs_total_price',
+                            'want_total_items', 'want_total_quantity', 'want_total_price', 'clerk')
 
     def save_order_items(self, order, order_items_data, created=True):
         product_items = {}
         product_quantities = {}
-        old_total_price= 0
+        old_total_price = {Product.TYPE_WANT: 0, Product.TYPE_NEEDS: 0}
         if not created:
-            old_total_price = order.total_price
+            old_total_price = {Product.TYPE_WANT: order.want_total_price, Product.TYPE_NEEDS: order.needs_total_price}
             for oi in order.order_items.all():
                 product_items[oi.product_id] = oi
                 product_quantities[oi.product_id] = oi.quantity
@@ -154,23 +157,31 @@ class OrderSerializer(DynamicFieldsSerializerMixin, serializers.ModelSerializer)
                 order_item = OrderItem(order=order, price=product.price, **order_item_data)
             order_items_records.append(order_item)
 
-        total_quantity = 0
-        total_price = 0
+        total_quantity = {Product.TYPE_WANT: 0, Product.TYPE_NEEDS: 0}
+        total_price = {Product.TYPE_WANT: 0, Product.TYPE_NEEDS: 0}
         for order_item in order_items_records:
             try:
                 order_item.save()
             except IntegrityError:
                 raise serializers.ValidationError({'order_item': {'product': ["Duplicated product."]}})
-            total_quantity += order_item.quantity
-            total_price += (order_item.price * order_item.quantity)
+            total_quantity[order_item.product.type] += order_item.quantity
+            total_price[order_item.product.type] += (order_item.price * order_item.quantity)
 
-        new_points = total_price - old_total_price
-        if new_points:
-            updated = Customer.objects.filter(id=order.customer_id, points__gte=new_points
-                                             ).update(points=F('points') - new_points)
+        needs_new_balance = total_price[Product.TYPE_NEEDS] - old_total_price[Product.TYPE_NEEDS]
+        if needs_new_balance:
+            updated = Customer.objects.filter(id=order.customer_id, needs_balance__gte=needs_new_balance
+                                             ).update(needs_balance=F('needs_balance') - needs_new_balance)
             if not updated:
                 raise serializers.ValidationError(
-                    {'order': {'customer': ["Not enough points for customer [{}]".format(order.customer)]}})
+                    {'order': {'customer': ["Not enough Needs Balance for customer [{}]".format(order.customer)]}})
+
+        want_new_balance = total_price[Product.TYPE_WANT] - old_total_price[Product.TYPE_WANT]
+        if want_new_balance:
+            updated = Customer.objects.filter(id=order.customer_id, want_balance__gte=want_new_balance
+                                             ).update(want_balance=F('want_balance') - want_new_balance)
+            if not updated:
+                raise serializers.ValidationError(
+                    {'order': {'customer': ["Not enough Want Balance for customer [{}]".format(order.customer)]}})
 
         deleted_ids = []
         for oi in product_items.values():
@@ -185,8 +196,10 @@ class OrderSerializer(DynamicFieldsSerializerMixin, serializers.ModelSerializer)
                 if not updated:
                     raise serializers.ValidationError(
                         {'order_item': {'product': ["Not enough quantity. #{}".format(pid)]}})
-        order.total_quantity = total_quantity
-        order.total_price = total_price
+        order.needs_total_quantity = total_quantity[Product.TYPE_NEEDS]
+        order.want_total_quantity = total_quantity[Product.TYPE_WANT]
+        order.needs_total_price = total_price[Product.TYPE_NEEDS]
+        order.want_total_price = total_price[Product.TYPE_WANT]
 
     @transaction.atomic()
     def create(self, validated_data):

@@ -42,8 +42,12 @@
                 <input type="text" placeholder="Customer Unique ID" class="form-control" data-ng-model="selectedRecord.uid"/>
             </div>
             <div class="form-group">
-                <label class="control-label">Points</label>
-                <input type="number" min="0" pattern="\d*" placeholder="Sales Points" class="form-control" data-ng-model="selectedRecord.points"/>
+                <label class="control-label">Account Balance (Needs)</label>
+                <input type="number" step="any" placeholder="Needs Account Balance" class="form-control" data-ng-model="selectedRecord.needs_balance"/>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Account Balance (Want)</label>
+                <input type="number" step="any" placeholder="Want Account Balance" class="form-control" data-ng-model="selectedRecord.want_balance"/>
             </div>
             <div class="form-group">
                 <label class="control-label">Unit</label>

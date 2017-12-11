@@ -176,7 +176,10 @@ class OrderView(PaginationPageSizeMixin, viewsets.ModelViewSet):
         for oi in instance.order_items.all():
             if oi.quantity:
                 Product.objects.filter(id=oi.product_id).update(quantity=F('quantity') + oi.quantity)
-        Customer.objects.filter(id=instance.customer_id).update(points=F('points') + instance.total_price)
+        Customer.objects.filter(id=instance.customer_id).update(
+            needs_balance=F('needs_balance') + instance.needs_total_price)
+        Customer.objects.filter(id=instance.customer_id).update(
+            want_balance=F('want_balance') + instance.want_total_price)
         return super(OrderView, self).perform_destroy(instance)
 
 
