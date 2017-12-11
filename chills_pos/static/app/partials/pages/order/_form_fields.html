@@ -18,10 +18,10 @@
                 <label class="control-label">Customer(*)</label>
                 <ui-select autofocus ui-select-open-on-focus on-select="focusFirstProduct()" focus-on="OrderCustomerFocus" data-ng-model="selectedRecord.customer" theme="bootstrap">
                     <ui-select-match placeholder="Customer">
-                        {{$select.selected.first_name}} {{$select.selected.last_name}} ({{$select.selected.uid || 'NO UID'}}) <em><small class="text-danger"><strong>{{ $select.selected.needs_balance}}</strong> needs balance</small> <span class="balance-caret">|</span> <small class="text-success"><strong>{{ $select.selected.want_balance}}</strong> want balance</small></em>
+                        {{$select.selected.first_name}} {{$select.selected.last_name}} ({{$select.selected.uid || 'NO UID'}}) <em><small class="text-danger"><strong>{{ $select.selected.needs_balance|currency }}</strong> needs balance</small> <span class="balance-caret">|</span> <small class="text-success"><strong>{{ $select.selected.want_balance|currency }}</strong> want balance</small></em>
                     </ui-select-match>
                     <ui-select-choices repeat="item.id as item in $global.Customer.comboData | filter: $select.search" value="{{$select.selected.id}}">
-                        <span ng-bind-html="item.first_name + ' ' + item.last_name + ' ('+ (item.uid || 'NO UID') + ')' + ' <em><small class=\'text-danger\'><strong>'+item.needs_balance+'</strong> needs balance</small> <span class=\'balance-caret\'>|</span> <small class=\'text-success\'><strong>'+item.want_balance+'</strong> want balance</small></em>'"></span>
+                        <span ng-bind-html="item.first_name + ' ' + item.last_name + ' ('+ (item.uid || 'NO UID') + ')' + ' <em><small class=\'text-danger\'><strong>'+(item.needs_balance|currency)+'</strong> needs balance</small> <span class=\'balance-caret\'>|</span> <small class=\'text-success\'><strong>'+(item.want_balance|currency)+'</strong> want balance</small></em>'"></span>
                     </ui-select-choices>
                 </ui-select>
             </div>
