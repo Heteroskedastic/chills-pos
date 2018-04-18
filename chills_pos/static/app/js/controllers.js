@@ -235,17 +235,17 @@ app.controller("ProductListCtrl", function($scope, $rootScope, $state, $statePar
             useExternalSorting: true,
             rowHeight: 35,
             columnDefs: [
-                {name: 'id', 'displayName': 'ID', width: 60,
+                {name: 'id', 'displayName': 'ID', width: 50,
                     cellTemplate: '<div class="ui-grid-cell-contents ng-binding ng-scope"><a class="text text-primary" href="{{grid.appScope.$state.href(\'product-edit\', {id: row.entity.id})}}">{{row.entity.id}}</a></div>'
                 },
-                {name: 'name', 'displayName': 'Name',
+                {name: 'name', 'displayName': 'Name', width: '20%',
                     cellTemplate: '<div class="ui-grid-cell-contents ng-binding ng-scope"><a class="text text-primary" href="{{grid.appScope.$state.href(\'product-edit\', {id: row.entity.id})}}">{{row.entity.name}}</a></div>'
                 },
                 {name: 'type', 'displayName': 'Type',
                     cellTemplate: '<div class="ui-grid-cell-contents ng-binding ng-scope" ng-bind-html="row.entity.type|productTypeFormat"></div>'
                 },
                 {name: 'upc', 'displayName': 'UPC'},
-                {name: 'part_number', 'displayName': 'Part Number'},
+                //{name: 'part_number', 'displayName': 'Part Number'},
                 {name: 'reorder_limit', 'displayName': 'Re-order Limit'},
                 {name: 'quantity', 'displayName': 'Quantity',
                     cellTemplate: '<div class="ui-grid-cell-contents ng-binding ng-scope text-bold" ng-class="{\'text-success\': row.entity.quantity>row.entity.reorder_limit , \'text-warning\' : row.entity.quantity==row.entity.reorder_limit, \'text-danger\' : row.entity.quantity<row.entity.reorder_limit}">{{row.entity.quantity}}</div>'
