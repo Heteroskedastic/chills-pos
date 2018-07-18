@@ -50,7 +50,10 @@
                             <tr ng-repeat="item in selectedRecord.order_items">
                                 <td>{{ $index + 1 }}</td>
                                 <td>
+                                    <!--
                                     <ui-select name="order_item_product" ui-select-open-on-focus data-ng-model="item.product" theme="bootstrap"  ng-keydown="($event.keyCode == 9 || $event.keyCode == 13) && !$event.shiftKey && focusQuantity($event)">
+                                    -->
+                                    <ui-select name="order_item_product" ui-select-open-on-focus data-ng-model="item.product" theme="bootstrap"  ng-keydown="onKeydownProduct($event, $last)">
                                         <ui-select-match placeholder="Product">
                                             {{$select.selected.name}} <em><small class="text-info">{{ $select.selected.quantity}} quantity</small></em>
                                         </ui-select-match>
@@ -60,7 +63,10 @@
                                     </ui-select>
                                 </td>
                                 <td>
-                                    <input name="order_item_quantity" type="number" min="1" pattern="\d*" placeholder="Quantity" class="form-control" data-ng-model="item.quantity" required ng-keydown="($last && $event.keyCode == 9 && !$event.shiftKey && insertAfter()) || ($event.keyCode == 46 && $event.altKey && selectedRecord.order_items.splice($index, 1)) || ($event.keyCode == 65 && $event.altKey && insertAfter($index))"/>
+                                    <!--
+                                    <input disabled name="order_item_quantity" type="number" min="1" pattern="\d*" placeholder="Quantity" class="form-control" data-ng-model="item.quantity" required ng-keydown="($last && $event.keyCode == 9 && !$event.shiftKey && insertAfter()) || ($event.keyCode == 46 && $event.altKey && selectedRecord.order_items.splice($index, 1)) || ($event.keyCode == 65 && $event.altKey && insertAfter($index))"/>
+                                    -->
+                                    <input name="order_item_quantity" type="number" min="1" pattern="\d*" placeholder="Quantity" class="form-control" data-ng-model="item.quantity"/>
                                 </td>
                                 <td class="pad-top15" ng-bind-html="($global.Product.comboData|findById:item.product).type|default:'-'|productTypeFormat">
                                 </td>

@@ -201,12 +201,26 @@ class OrderSerializer(DynamicFieldsSerializerMixin, serializers.ModelSerializer)
         order.needs_total_price = total_price[Product.TYPE_NEEDS]
         order.want_total_price = total_price[Product.TYPE_WANT]
 
+    @staticmethod
+    def _merge_order_items(order_items):
+        new_order_items = []
+        products_idx = {}
+        for idx in range(len(order_items)):
+            item = order_items[idx]
+            product_id = item['product'].id
+            if product_id in products_idx:
+                new_order_items[products_idx[product_id]]['quantity'] += item['quantity']
+            else:
+                products_idx[product_id] = len(new_order_items)
+                new_order_items.append(item)
+        return new_order_items
+
     @transaction.atomic()
     def create(self, validated_data):
         order_items_data = validated_data.pop('order_items', None) or []
         order = super(OrderSerializer, self).create(validated_data)
         order.clerk = self.context['request'].user
-        self.save_order_items(order, order_items_data)
+        self.save_order_items(order, self._merge_order_items(order_items_data))
         order.save()
         return order
 
@@ -214,7 +228,7 @@ class OrderSerializer(DynamicFieldsSerializerMixin, serializers.ModelSerializer)
     def update(self, instance, validated_data):
         order_items_data = validated_data.pop('order_items') or []
         instance.clerk = self.context['request'].user
-        self.save_order_items(instance, order_items_data, created=False)
+        self.save_order_items(instance, self._merge_order_items(order_items_data), created=False)
         return super(OrderSerializer, self).update(instance, validated_data)
 
 

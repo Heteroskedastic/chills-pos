@@ -882,9 +882,25 @@ app.controller("OrderNewCtrl", function($scope, $rootScope, $state,$stateParams,
             $scope.selectedRecord.order_items.splice(idx+1, 0, {quantity: 1});
         }
     };
+    $scope.onKeydownProduct = function($event, $last) {
+        if ($event.keyCode == 9 && !$event.shiftKey) {
+            if ($last) {
+                $scope.insertAfter();
+            }
+            $scope.focusNextProduct($event);
+        }
+        if ($event.keyCode == 27 && $last) {
+            $scope.focusSaveButton($event);
+        }
+    };
     $scope.focusFirstProduct = function() {
         $timeout(function () {
             angular.element('table [name=order_item_product]:first input.ui-select-focusser').focus();
+        });
+    };
+    $scope.focusNextProduct = function($event) {
+        $timeout(function () {
+            angular.element($event.target).parents('tr').next().find('[name=order_item_product]:first input.ui-select-focusser').focus();
         });
     };
     $scope.focusQuantity = function($event) {
@@ -892,10 +908,22 @@ app.controller("OrderNewCtrl", function($scope, $rootScope, $state,$stateParams,
             angular.element($event.target).parents('tr').find('input[name=order_item_quantity]').focus();
         });
     };
+    $scope.focusSaveButton = function($event) {
+        $timeout(function () {
+            angular.element('form button[name=submitBtn]').focus()
+        });
+    };
+    $scope.unifyOrderItems = function() {
+
+    };
     $rootScope.loadProductCombo();
     $rootScope.loadCustomerCombo();
     $scope.$broadcast('OrderCustomerFocus');
     $scope.addRecord = function() {
+        var itemsCount = $scope.selectedRecord.order_items.length;
+        if (itemsCount > 1 && !$scope.selectedRecord.order_items[itemsCount - 1].product) {
+            $scope.selectedRecord.order_items.splice(itemsCount-1);
+        }
         $scope.saving = true;
         $scope.selectedRecord.$save().then(function(response) {
             if ($global && $global.gridOptions) {
@@ -929,14 +957,35 @@ app.controller("OrderEditCtrl", function($scope, $rootScope, $state,$stateParams
             $scope.selectedRecord.order_items.splice(idx+1, 0, {quantity: 1});
         }
     };
+    $scope.onKeydownProduct = function($event, $last) {
+        if ($event.keyCode == 9 && !$event.shiftKey) { // <TAB> key
+            if ($last) {
+                $scope.insertAfter();
+            }
+            $scope.focusNextProduct($event);
+        }
+        if ($event.keyCode == 27) { // <ESC> key
+            $scope.focusSaveButton($event);
+        }
+    };
     $scope.focusFirstProduct = function() {
         $timeout(function () {
             angular.element('table [name=order_item_product]:first input.ui-select-focusser').focus();
         });
     };
+    $scope.focusNextProduct = function($event) {
+        $timeout(function () {
+            angular.element($event.target).parents('tr').next().find('[name=order_item_product]:first input.ui-select-focusser').focus();
+        });
+    };
     $scope.focusQuantity = function($event) {
         $timeout(function () {
             angular.element($event.target).parents('tr').find('input[name=order_item_quantity]').focus();
+        });
+    };
+    $scope.focusSaveButton = function($event) {
+        $timeout(function () {
+            angular.element('form button[name=submitBtn]').focus()
         });
     };
     $scope.showDeleteConfirm = function() {
@@ -984,6 +1033,10 @@ app.controller("OrderEditCtrl", function($scope, $rootScope, $state,$stateParams
     $scope.updateRecord = function() {
         if (!$scope.selectedRecord) {
             return;
+        }
+        var itemsCount = $scope.selectedRecord.order_items.length;
+        if (itemsCount > 1 && !$scope.selectedRecord.order_items[itemsCount - 1].product) {
+            $scope.selectedRecord.order_items.splice(itemsCount-1);
         }
         $scope.saving = true;
         $scope.selectedRecord.$update().then(function(response) {
