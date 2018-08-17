@@ -260,6 +260,7 @@ DBBACKUP_STORAGE = 'django.core.files.storage.FileSystemStorage'
 ##############################
 EMAIL_MOCK_SENDING = False
 SMS_MOCK_SENDING = False
+ALLOW_NEGATIVE_CUSTOMER_BALANCE = True
 # we use HOSTNAME to create external links outside of django request
 HOSTNAME = 'localhost'
 DEFAULT_EMAIL_FROM = 'info@networkmonitor.io'
@@ -269,3 +270,4 @@ REDIS_MEM_HOST = 'localhost'
 REDIS_MEM_PORT = 6379
 REDIS_MEM_DB = 1
 REDIS_MEM_PREFIX = 'chills-pos:'
+

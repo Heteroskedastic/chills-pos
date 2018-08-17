@@ -168,20 +168,29 @@ class OrderSerializer(DynamicFieldsSerializerMixin, serializers.ModelSerializer)
             total_price[order_item.product.type] += (order_item.price * order_item.quantity)
 
         needs_new_balance = total_price[Product.TYPE_NEEDS] - old_total_price[Product.TYPE_NEEDS]
+        allow_negative = settings.ALLOW_NEGATIVE_CUSTOMER_BALANCE
         if needs_new_balance:
-            updated = Customer.objects.filter(id=order.customer_id, needs_balance__gte=needs_new_balance
-                                             ).update(needs_balance=F('needs_balance') - needs_new_balance)
-            if not updated:
-                raise serializers.ValidationError(
-                    {'order': {'customer': ["Not enough Needs Balance for customer [{}]".format(order.customer)]}})
+            needs_qs = Customer.objects.filter(id=order.customer_id)
+            if not allow_negative:
+                needs_qs = needs_qs.filter(needs_balance__gte=needs_new_balance)
+                updated = needs_qs.update(needs_balance=F('needs_balance') - needs_new_balance)
+                if not updated:
+                    raise serializers.ValidationError(
+                        {'order': {'customer': ["Not enough Needs Balance for customer [{}]".format(order.customer)]}})
+            else:
+                needs_qs.update(needs_balance=F('needs_balance') - needs_new_balance)
 
         want_new_balance = total_price[Product.TYPE_WANT] - old_total_price[Product.TYPE_WANT]
         if want_new_balance:
-            updated = Customer.objects.filter(id=order.customer_id, want_balance__gte=want_new_balance
-                                             ).update(want_balance=F('want_balance') - want_new_balance)
-            if not updated:
-                raise serializers.ValidationError(
-                    {'order': {'customer': ["Not enough Want Balance for customer [{}]".format(order.customer)]}})
+            wants_qs = Customer.objects.filter(id=order.customer_id)
+            if not allow_negative:
+                wants_qs = wants_qs.filter(want_balance__gte=want_new_balance)
+                updated = wants_qs.update(want_balance=F('want_balance') - want_new_balance)
+                if not updated:
+                    raise serializers.ValidationError(
+                        {'order': {'customer': ["Not enough Want Balance for customer [{}]".format(order.customer)]}})
+            else:
+                wants_qs.update(want_balance=F('want_balance') - want_new_balance)
 
         deleted_ids = []
         for oi in product_items.values():

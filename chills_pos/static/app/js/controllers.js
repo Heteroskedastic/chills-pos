@@ -405,8 +405,12 @@ app.controller("CustomerListCtrl", function($scope, $rootScope, $state, $statePa
                     cellTemplate: '<div class="ui-grid-cell-contents ng-binding ng-scope"><a class="text text-primary" href="{{grid.appScope.$state.href(\'customer-edit\', {id: row.entity.id})}}">{{row.entity.last_name}}</a></div>'
                 },
                 {name: 'uid', 'displayName': 'UID'},
-                {name: 'needs_balance', 'displayName': 'Balance (Needs)', cellFilter: 'currency'},
-                {name: 'want_balance', 'displayName': 'Balance (Want)', cellFilter: 'currency'},
+                {name: 'needs_balance', 'displayName': 'Balance (Needs)',
+                    cellTemplate: '<div class="ui-grid-cell-contents ng-binding ng-scope text-bold" ng-class="{\'text-success\': row.entity.needs_balance>0 , \'text-warning\' : row.entity.needs_balance==0, \'text-danger\' : row.entity.needs_balance<0}">{{row.entity.needs_balance|currency}}</div>'
+                },
+                {name: 'want_balance', 'displayName': 'Balance (Want)',
+                    cellTemplate: '<div class="ui-grid-cell-contents ng-binding ng-scope text-bold" ng-class="{\'text-success\': row.entity.want_balance>0 , \'text-warning\' : row.entity.want_balance==0, \'text-danger\' : row.entity.want_balance<0}">{{row.entity.want_balance|currency}}</div>'
+                },
                 {name: 'unit', 'displayName': 'Unit',
                     cellTemplate: '<div class="ui-grid-cell-contents ng-binding ng-scope">{{row.entity._unit.name|default:"-"}}</div>'
                 }
