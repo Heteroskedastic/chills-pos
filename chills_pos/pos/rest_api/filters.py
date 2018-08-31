@@ -5,9 +5,8 @@ from pos.models import OrderItem
 
 
 class SalesReportFilter(django_filters.rest_framework.FilterSet):
-    create_date = django_filters.DateFilter(name="order__create_datetime")
-    min_create_date = django_filters.DateFilter(name="order__create_datetime", lookup_expr='gte')
-    max_create_date = django_filters.DateFilter(method='filter_max_create_date')
+    min_create_datetime = django_filters.IsoDateTimeFilter(name="order__create_datetime", lookup_expr='gte')
+    max_create_datetime = django_filters.IsoDateTimeFilter(name="order__create_datetime", lookup_expr='lt')
     clerk = django_filters.NumberFilter(name="order__clerk")
     customer = django_filters.NumberFilter(name="order__customer")
     unit = django_filters.NumberFilter(name="order__customer__unit")
@@ -20,7 +19,3 @@ class SalesReportFilter(django_filters.rest_framework.FilterSet):
         model = OrderItem
         fields = '__all__'
 
-    def filter_max_create_date(self, queryset, name, value):
-        return queryset.filter(
-            order__create_datetime__lt=value+timedelta(days=1)
-        )

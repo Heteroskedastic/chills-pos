@@ -1129,11 +1129,12 @@ app.controller("SalesReportCtrl", function($scope, $rootScope, $state, $statePar
             return {};
         }
         var data = angular.copy($scope.filteringOptions);
-        if (data.min_create_date) {
-            data.min_create_date = moment(data.min_create_date).format('YYYY-MM-DD');
+        var zoneOffset = moment().utcOffset();
+        if (data.min_create_datetime) {
+            data.min_create_datetime = moment.utc(data.min_create_datetime).subtract({'minutes': zoneOffset}).format('YYYY-MM-DDTHH:mm:ss\\Z');
         }
-        if (data.max_create_date) {
-            data.max_create_date = moment(data.max_create_date).format('YYYY-MM-DD');
+        if (data.max_create_datetime) {
+            data.max_create_datetime = moment.utc(data.max_create_datetime).add({'days': 1}).subtract({'minutes': zoneOffset}).format('YYYY-MM-DDTHH:mm:ss\\Z');
         }
         return data;
     };

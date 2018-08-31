@@ -54,11 +54,11 @@
                 <div class="col-md-6 form-group">
                     <label class="control-label">Date Range</label>
                     <p class="input-group">
-                      <input type="text" placeholder="From Date" class="form-control" uib-datepicker-popup="yyyy-MM-dd" data-ng-model="filteringOptions.min_create_date" is-open="popup1.opened" close-text="Close" alt-input-formats="altInputFormats" data-ng-model-options="{timezone: 'utc'}" ng-change="refreshData()" />
+                      <input type="text" placeholder="From Date" class="form-control" uib-datepicker-popup="yyyy-MM-dd" data-ng-model="filteringOptions.min_create_datetime" is-open="popup1.opened" close-text="Close" alt-input-formats="altInputFormats" data-ng-model-options="{timezone: 'utc'}" ng-change="refreshData()" />
                       <span class="input-group-btn">
                         <button type="button" class="btn btn-default" ng-click="popup1.opened=true"><i class="glyphicon glyphicon-calendar"></i></button>
                       </span>
-                      <input type="text" placeholder="To Date" class="form-control" uib-datepicker-popup="yyyy-MM-dd" data-ng-model="filteringOptions.max_create_date" is-open="popup2.opened" close-text="Close" alt-input-formats="altInputFormats" data-ng-model-options="{timezone: 'utc'}" ng-change="refreshData()" />
+                      <input type="text" placeholder="To Date" class="form-control" uib-datepicker-popup="yyyy-MM-dd" data-ng-model="filteringOptions.max_create_datetime" is-open="popup2.opened" close-text="Close" alt-input-formats="altInputFormats" data-ng-model-options="{timezone: 'utc'}" ng-change="refreshData()" />
                       <span class="input-group-btn">
                         <button type="button" class="btn btn-default" ng-click="popup2.opened=true"><i class="glyphicon glyphicon-calendar"></i></button>
                       </span>
