@@ -3,7 +3,7 @@ bootstrap-admin==0.3.7.1
 django-jsonfield==1.0.1
 django-bootstrap3==7.1.0
 django-phonenumber-field==1.1.0
-psycopg2==2.6.2
+psycopg2-binary==2.7.5
 django-mailgun==0.9.1
 python-social-auth==0.2.21
 django-filter==1.0.1
