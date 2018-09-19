@@ -254,6 +254,14 @@ JWT_AUTH = {
 
 # dbbackup settings
 DBBACKUP_STORAGE = 'django.core.files.storage.FileSystemStorage'
+DBBACKUP_CONNECTOR_MAPPING = {
+    'django.db.backends.postgresql_psycopg2': 'dbbackup.db.postgresql.PgDumpBinaryConnector',
+}
+DBBACKUP_CONNECTORS = {
+    'default': {
+        'SINGLE_TRANSACTION': False
+    }
+}
 
 ##############################
 #  chills_pos settings  #

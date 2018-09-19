@@ -14,7 +14,7 @@ cd $DJANGODIR/chills_pos
 
 mkdir -p $BACKUP_DIR
 
-python manage.py dbbackup -z -O $BACKUP_DIR/db.zip --settings=$DJANGO_SETTINGS_MODULE --noinput
+python manage.py dbbackup -O $BACKUP_DIR/db.zip --settings=$DJANGO_SETTINGS_MODULE --noinput
 python manage.py mediabackup -z -O $BACKUP_DIR/media.zip --settings=$DJANGO_SETTINGS_MODULE --noinput
 
 echo
