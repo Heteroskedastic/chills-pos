@@ -21,7 +21,7 @@
                         <ui-select-match allow-clear="true" placeholder="Filter by Product">
                             {{$select.selected.name}}
                         </ui-select-match>
-                        <ui-select-choices repeat="item.id as item in $global.Product.comboData | filter: $select.search" value="{{$select.selected.id}}">
+                        <ui-select-choices repeat="item.id as item in $global.Product.comboData | filter: $select.search | limitTo:20" value="{{$select.selected.id}}">
                             <span ng-bind-html="item.name | highlight: $select.search"></span>
                         </ui-select-choices>
                     </ui-select>
@@ -32,7 +32,7 @@
                         <ui-select-match allow-clear="true" placeholder="Filter by Customer">
                             {{$select.selected.first_name}} {{$select.selected.last_name}}
                         </ui-select-match>
-                        <ui-select-choices repeat="item.id as item in $global.Customer.comboData | filter: $select.search" value="{{$select.selected.id}}">
+                        <ui-select-choices repeat="item.id as item in $global.Customer.comboData | filter: $select.search | limitTo:20" value="{{$select.selected.id}}">
                             <span ng-bind-html="item.first_name + ' ' + item.last_name | highlight: $select.search"></span>
                         </ui-select-choices>
                     </ui-select>

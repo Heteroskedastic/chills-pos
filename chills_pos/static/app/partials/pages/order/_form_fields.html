@@ -20,7 +20,7 @@
                     <ui-select-match placeholder="Customer">
                         {{$select.selected.first_name}} {{$select.selected.last_name}} ({{$select.selected.uid || 'NO UID'}}) <em><small class="text-danger"><strong>{{ $select.selected.needs_balance|currency }}</strong> needs balance</small> <span class="balance-caret">|</span> <small class="text-success"><strong>{{ $select.selected.want_balance|currency }}</strong> want balance</small></em>
                     </ui-select-match>
-                    <ui-select-choices repeat="item.id as item in $global.Customer.comboData | filter: $select.search" value="{{$select.selected.id}}">
+                    <ui-select-choices repeat="item.id as item in $global.Customer.comboData | filter: $select.search | limitTo2:20:selectedRecord.customer" value="{{$select.selected.id}}">
                         <span ng-bind-html="item.first_name + ' ' + item.last_name + ' ('+ (item.uid || 'NO UID') + ')' + ' <em><small class=\'text-danger\'><strong>'+(item.needs_balance|currency)+'</strong> needs balance</small> <span class=\'balance-caret\'>|</span> <small class=\'text-success\'><strong>'+(item.want_balance|currency)+'</strong> want balance</small></em>'"></span>
                     </ui-select-choices>
                 </ui-select>
@@ -57,7 +57,7 @@
                                         <ui-select-match placeholder="Product">
                                             {{$select.selected.name}} <em><small class="text-info">{{ $select.selected.quantity}} quantity</small></em>
                                         </ui-select-match>
-                                        <ui-select-choices repeat="pitem.id as pitem in $global.Product.comboData | filter: $select.search" value="{{$select.selected.id}}">
+                                        <ui-select-choices repeat="pitem.id as pitem in $global.Product.comboData | filter: $select.search | limitTo2:20:item.product" value="{{$select.selected.id}}">
                                             <span ng-bind-html="pitem.name + ' <em><small class=\'text-info\'>'+pitem.quantity+' quantity </small></em>' + (pitem.type|productTypeFormat:'product-type-small pull-right') | highlight: $select.search"></span>
                                         </ui-select-choices>
                                     </ui-select>

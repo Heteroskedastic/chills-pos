@@ -74,3 +74,24 @@ app.filter('sumByKey', function() {
         }, 0);
     };
 });
+
+
+app.filter('limitTo2', function ($filter) {
+    return function (input, limit, selectedItem) {
+        var filters,
+            limitTo1 = $filter('limitTo');
+        filters = limitTo1(input, limit);
+        if (input && selectedItem) {
+            var selectedItemIndex = input.findIndex(function(item) {
+                return item.id === selectedItem;
+            });
+            if (selectedItemIndex >= limit) {
+                filters.push(input[selectedItemIndex]);
+            }
+
+        }
+        return filters;
+
+
+    };
+});
