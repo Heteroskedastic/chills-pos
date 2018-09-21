@@ -37,6 +37,7 @@ mkdir -p $PROJECTDIR
 mkdir -p $PROJECTDIR/run
 mkdir -p $PROJECTDIR/logs
 mkdir -p $PROJECTDIR/etc
+mkdir -p $PROJECTDIR/tmp
 
 if [ -d "$DJANGODIR" ]; then
     cd $DJANGODIR

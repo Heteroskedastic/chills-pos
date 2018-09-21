@@ -19,3 +19,5 @@ djangorestframework-jwt==1.9.0
 markdown==2.6.8
 djoser==0.5.4
 pillow==4.0.0
+awscli==1.15.75
+boto3==1.8.2

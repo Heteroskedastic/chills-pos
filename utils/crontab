@@ -1,0 +1,3 @@
+30 4   * * *   appuser /usr/local/bin/chills_pos_backup
+10 5   * * *   appuser /opt/webapps/chills_pos/env/bin/aws s3 sync /opt/webapps/chills_pos/backup/ s3://chills-pos/backup/
+40 5   * * *   appuser rm -rf /opt/webapps/chills_pos/backup/*
