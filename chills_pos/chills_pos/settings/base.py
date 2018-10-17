@@ -211,6 +211,7 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_PAGINATION_CLASS': 'chills_pos.helpers.utils.CustomPagination',
     'DEFAULT_FILTER_BACKENDS': ('rest_framework.filters.DjangoFilterBackend',
+                                'rest_framework.filters.SearchFilter',
                                 'rest_framework.filters.OrderingFilter'),
     'PAGE_SIZE': 10,
     'COERCE_DECIMAL_TO_STRING': False,

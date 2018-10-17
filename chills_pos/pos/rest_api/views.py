@@ -113,6 +113,7 @@ class ProductView(PaginationPageSizeMixin, viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     filter_fields = ('name', 'upc', 'part_number', 'active',)
+    search_fields = ('name', 'upc', 'type')
     ordering_fields = '__all__'
     ordering = ('id',)
 

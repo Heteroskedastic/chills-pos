@@ -9,6 +9,18 @@
 {{$state.current.data.pageInfo.title}} <small>{{$state.current.data.pageInfo.titleDesc}}</small>
 </h3>
 <!-- END PAGE HEADER-->
+<div class="filters">
+    <div class="col-md-12 portlet light">
+        <form role="form">
+            <div class="row">
+                <div class="col-md-6 form-group">
+                    <label class="control-label">Search</label>
+                    <input type="text" placeholder="Enter a keyword and press Enter..." class="form-control" data-ng-model="filteringOptions.search" ng-model-options="{updateOn : 'change'}" ng-change="refreshData()"/>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 <div class="clearfix">
 </div>
 <div class="row">
