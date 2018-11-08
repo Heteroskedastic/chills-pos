@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
-    'kombu.transport.django',
     'bootstrap3',
     'social.apps.django_app.default',
     'django_filters',
