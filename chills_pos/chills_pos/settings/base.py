@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     'kombu.transport.django',
-    'djcelery',
     'bootstrap3',
     'social.apps.django_app.default',
     'django_filters',
@@ -175,15 +174,6 @@ MAILGUN_ACCESS_KEY = '<MAILGUN_ACCESS_KEY>'
 TWILIO_ACCOUNT_SID = '<ACCOUNT_SID>'
 TWILIO_AUTH_TOKEN = '<AUTH_TOKEN>'
 TWILIO_DEFAULT_CALLERID = '<DEFAULT_CALLERID>'
-
-# celery specific settings
-CELERY_ACCEPT_CONTENT = ['application/json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
-CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
-
-CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
-BROKER_URL = 'django://'
 
 # Google social auth2 setting
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '<GOOGLE_OAUTH2_KEY.apps.googleusercontent.com>'

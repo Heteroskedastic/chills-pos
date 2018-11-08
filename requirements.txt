@@ -8,8 +8,6 @@ django-mailgun==0.9.1
 python-social-auth==0.2.21
 django-filter==1.0.1
 django-pagination-bootstrap==1.1
-django-celery==3.1.17
-celery==3.1.24
 twilio==5.6.0
 redis==2.10.5
 beautifulsoup4==4.4.1

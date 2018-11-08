@@ -93,3 +93,6 @@ ENV/
 
 # django media
 media/
+*/*/settings/external_config*.py
+*/*/settings/local.py
+
