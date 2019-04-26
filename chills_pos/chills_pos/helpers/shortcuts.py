@@ -1,5 +1,5 @@
 from django.conf import settings
-from twilio.rest import TwilioRestClient
+from twilio.rest import Client as TwilioRestClient
 
 from chills_pos.redis_mem import RedisMem
 
